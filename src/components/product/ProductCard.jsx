@@ -8,6 +8,7 @@ import Badge from "../ui/Badge";
 import { toastSuccess } from "../../utils/alerts";
 import { cn } from "../../utils/cn";
 import { useAuth } from '../../context/AuthContext';
+import { Sparkles } from 'lucide-react';
 
 export default function ProductCard({ product }) {
   const { t, lang } = useLanguage();
