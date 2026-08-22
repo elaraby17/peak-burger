@@ -6,6 +6,18 @@ export const STORAGE_KEYS = {
   FAVORITES: "peakburger_favorites",
   ORDERS: "peakburger_orders",
   LANGUAGE: "peakburger_language",
+  // Admin-managed data. Shared with the customer frontend so both sides
+  // read/write through the same service layer (single source of truth).
+  PRODUCTS: "peakburger_products",
+  CATEGORIES: "peakburger_categories",
+  SAUCES: "peakburger_sauces",
+  OFFERS: "peakburger_offers",
+  COUPONS: "peakburger_coupons",
+  BRANCHES: "peakburger_branches",
+  REVIEWS: "peakburger_reviews",
+  PAYMENTS: "peakburger_payments",
+  ORDER_STATUS_HISTORY: "peakburger_order_status_history",
+  ADMIN_USER: "peakburger_admin_user",
 };
 
 export function readStorage(key, fallback) {

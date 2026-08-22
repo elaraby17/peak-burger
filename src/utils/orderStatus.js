@@ -1,29 +1,30 @@
-export const ORDER_STATUSES = [
-  "pending",
-  "confirmed",
-  "preparing",
-  "out_for_delivery",
-  "delivered",
-];
+// src/utils/orderStatus.js
 
 export const statusLabels = {
-  pending: { en: "Pending", ar: "قيد الانتظار" },
-  confirmed: { en: "Confirmed", ar: "تم التأكيد" },
-  preparing: { en: "Preparing", ar: "جاري التحضير" },
-  out_for_delivery: { en: "Out for Delivery", ar: "في الطريق إليك" },
-  delivered: { en: "Delivered", ar: "تم التوصيل" },
-  cancelled: { en: "Cancelled", ar: "ملغي" },
+    pending: "قيد الانتظار",
+    processing: "جاري التجهيز",
+    completed: "تم التوصيل",
+    cancelled: "ملغي",
 };
 
 export const statusTone = {
-  pending: "outline",
-  confirmed: "primary",
-  preparing: "primary",
-  out_for_delivery: "secondary",
-  delivered: "ink",
-  cancelled: "outline",
+    pending: "warning",
+    processing: "info",
+    completed: "success",
+    cancelled: "danger",
 };
 
-export function statusStepIndex(status) {
-  return ORDER_STATUSES.indexOf(status);
-}
+export const ORDER_STATUSES = [
+    { id: "pending", name: "قيد الانتظار" },
+    { id: "processing", name: "جاري التجهيز" },
+    { id: "completed", name: "تم التوصيل" },
+    { id: "cancelled", name: "ملغي" },
+];
+
+// أضف هذه الخريطة أو الدالة لتحديد رقم الخطوة:
+export const statusStepIndex = {
+    pending: 0,
+    processing: 1,
+    completed: 2,
+    cancelled: -1,
+};
