@@ -8,7 +8,7 @@ export default function Hero() {
   const { lang } = useLanguage();
 
   return (
-    <section className="relative overflow-hidden bg-ink">
+    <section className="relative overflow-hidden bg-ink pt-16">
       {/* Real Peak Burger photo as the hero background */}
       <div className="absolute inset-0">
         <img src={heroBg} alt="" className="h-full w-full object-cover object-center" />

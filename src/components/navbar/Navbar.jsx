@@ -41,7 +41,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/5 bg-cream/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-ink/5 bg-cream/90 backdrop-blur-md sm:backdrop-blur-none">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
         <button
           className="flex h-10 w-10 items-center justify-center rounded-full text-ink lg:hidden"
@@ -146,7 +146,7 @@ export default function Navbar() {
       {/* Mobile drawer */}
       <div
         className={cn(
-          "fixed inset-0 z-50 transition-opacity lg:hidden",
+          "fixed inset-0 z-50  transition-opacity duration-300 lg:hidden",
           drawerOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
       >
@@ -158,7 +158,7 @@ export default function Navbar() {
             drawerOpen ? "translate-x-0" : lang === "ar" ? "translate-x-full" : "-translate-x-full"
           )}
         >
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex  items-center justify-between">
             <img src={logo} alt="Peak Burger" className="h-10 w-10 rounded-full object-cover" />
             <button onClick={() => setDrawerOpen(false)} aria-label="Close menu">
               <X className="h-6 w-6 text-ink" />
