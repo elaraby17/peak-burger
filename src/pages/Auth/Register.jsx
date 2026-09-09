@@ -1,19 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, User, Phone } from "lucide-react";
+import { Mail, Lock, User, Phone, Image as ImageIcon } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { useAuth } from "../../context/AuthContext";
 import AuthLayout from "../../components/forms/AuthLayout";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import { toastSuccess } from "../../utils/alerts";
+import { toastSuccess, toastError } from "../../utils/alerts";
 
 export default function Register() {
   const { lang } = useLanguage();
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    password_confirmation: "",
+    avatar: null,
+  });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,13 +31,25 @@ export default function Register() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // التحقق البسيط من تطابق كلمة المرور محلياً قبل الإرسال
+    if (form.password !== form.password_confirmation) {
+      setError(lang === "ar" ? "كلمتا المرور غير متطابقتين" : "Passwords do not match");
+      return;
+    }
+
     setIsLoading(true);
     try {
       await register(form);
       toastSuccess(lang === "ar" ? "تم إنشاء الحساب!" : "Account created!");
       navigate("/account", { replace: true });
     } catch (err) {
-      setError(err.message || (lang === "ar" ? "حصل خطأ، حاول تاني" : "Something went wrong"));
+      // التعامل مع أخطاء الـ Validation القادمة من الـ Backend
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        (lang === "ar" ? "حصل خطأ، حاول تاني" : "Something went wrong");
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -74,6 +93,13 @@ export default function Register() {
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
         />
         <Input
+          label={lang === "ar" ? "صورة البروفايل" : "Profile image"}
+          type="file"
+          icon={ImageIcon}
+          accept="image/*"
+          onChange={(e) => setForm({ ...form, avatar: e.target.files[0] })}
+        />
+        <Input
           label={lang === "ar" ? "كلمة المرور" : "Password"}
           type="password"
           icon={Lock}
@@ -81,6 +107,15 @@ export default function Register() {
           minLength={6}
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+        <Input
+          label={lang === "ar" ? "تاكيد كلمة المرور" : "Confirm password"}
+          type="password"
+          icon={Lock}
+          required
+          minLength={6}
+          value={form.password_confirmation}
+          onChange={(e) => setForm({ ...form, password_confirmation: e.target.value })}
         />
         {error && <p className="text-sm font-medium text-secondary">{error}</p>}
         <Button type="submit" variant="primary" size="lg" className="w-full" isLoading={isLoading}>

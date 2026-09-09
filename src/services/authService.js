@@ -1,79 +1,88 @@
+// src/services/authService.js — استبدل بالكامل
+import api from "./api";
 import { STORAGE_KEYS, readStorage, writeStorage, removeStorage } from "../utils/storage";
 
-// Frontend-only auth simulation. Every function still returns a Promise and
-// throws the same shape of error a Laravel Sanctum API would, so AuthContext
-// and the UI don't have to change when POST /api/login etc. are wired up.
+// Backed by AuthController (routes/api.php: /api/auth/*).
+// register/login return { success, message, data: { user, token } } per the
+// recommended controller patch. Sessions are persisted to localStorage the
+// same way the old mock version did, so api.js's request interceptor keeps
+// attaching the token automatically.
 
-const USERS_KEY = "peakburger_registered_users";
-const LATENCY = 350;
-const delay = (value) => new Promise((resolve) => setTimeout(() => resolve(value), LATENCY));
-const fail = (message) =>
-  new Promise((_, reject) => setTimeout(() => reject(new Error(message)), LATENCY));
+function normalizeUser(raw) {
+    if (!raw) return null;
+    return {
+        id: raw.id,
+        name: raw.name,
+        email: raw.email,
+        phone: raw.phone,
+        avatar: raw.avatar,
+    };
+}
 
-function getRegisteredUsers() {
-  return readStorage(USERS_KEY, []);
+const unwrap = (res) => res.data.data;
+
+function persistSession(session) {
+    writeStorage(STORAGE_KEYS.USER, session);
+    return session;
 }
 
 export const authService = {
-  // POST /api/register
-  register: async ({ name, email, phone, password }) => {
-    const users = getRegisteredUsers();
-    if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
-      return fail("An account with this email already exists.");
-    }
-    const user = {
-      id: `u_${Date.now()}`,
-      name,
-      email,
-      phone,
-      password, // demo-only: never store plain-text passwords against a real API
-      avatar: null,
-      createdAt: new Date().toISOString(),
-    };
-    writeStorage(USERS_KEY, [...users, user]);
-    const session = toSession(user);
-    writeStorage(STORAGE_KEYS.USER, session);
-    return delay(session);
-  },
+    // POST /api/auth/register
+    register: ({ name, email, phone, password, avatarFile }) => {
+        const fd = new FormData();
+        fd.append("name", name);
+        fd.append("email", email);
+        fd.append("phone", phone);
+        fd.append("password", password);
+        // StoreUserRequest requires `confirmed`, i.e. a matching
+        // password_confirmation field - the register form only asks once, so
+        // we fill it in automatically here rather than adding a second field.
+        fd.append("password_confirmation", password);
+        if (avatarFile) fd.append("avatar", avatarFile);
 
-  // POST /api/login
-  login: async ({ email, password }) => {
-    const users = getRegisteredUsers();
-    const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-    if (!user || user.password !== password) {
-      return fail("Incorrect email or password.");
-    }
-    const session = toSession(user);
-    writeStorage(STORAGE_KEYS.USER, session);
-    return delay(session);
-  },
+        return api
+            .post("/auth/register", fd)
+            .then(unwrap)
+            .then(({ user, token }) => persistSession({ ...normalizeUser(user), token }));
+    },
 
-  // POST /api/logout
-  logout: async () => {
-    removeStorage(STORAGE_KEYS.USER);
-    return delay(true);
-  },
+    // POST /api/auth/login
+    login: ({ email, password }) =>
+        api
+            .post("/auth/login", { email, password })
+            .then(unwrap)
+            .then(({ user, token }) => persistSession({ ...normalizeUser(user), token })),
 
-  // GET /api/user
-  getCurrentUser: async () => delay(readStorage(STORAGE_KEYS.USER, null)),
+    // POST /api/auth/logout
+    logout: () =>
+        api
+            .post("/auth/logout")
+            .catch(() => {}) // still clear the local session even if the request fails
+            .then(() => {
+                removeStorage(STORAGE_KEYS.USER);
+                return true;
+            }),
 
-  // PUT /api/profile
-  updateProfile: async (updates) => {
-    const current = readStorage(STORAGE_KEYS.USER, null);
-    if (!current) return fail("Not authenticated.");
+    // GET /api/auth/user - re-validates the stored token and refreshes profile fields
+    getCurrentUser: () => {
+        const stored = readStorage(STORAGE_KEYS.USER, null);
+        if (!stored?.token) return Promise.resolve(null);
+        return api
+            .get("/auth/user")
+            .then(unwrap)
+            .then((user) => persistSession({ ...normalizeUser(user), token: stored.token }))
+            .catch(() => {
+                removeStorage(STORAGE_KEYS.USER); // token expired/invalid
+                return null;
+            });
+    },
 
-    const users = getRegisteredUsers();
-    const updatedUsers = users.map((u) => (u.id === current.id ? { ...u, ...updates } : u));
-    writeStorage(USERS_KEY, updatedUsers);
-
-    const updatedSession = { ...current, ...updates };
-    writeStorage(STORAGE_KEYS.USER, updatedSession);
-    return delay(updatedSession);
-  },
+    // PUT /api/auth/profile - not built on the backend yet, wire up once it exists
+    updateProfile: (updates) => {
+        const stored = readStorage(STORAGE_KEYS.USER, null);
+        return api
+            .put("/auth/profile", updates)
+            .then(unwrap)
+            .then((user) => persistSession({ ...normalizeUser(user), token: stored?.token }));
+    },
 };
-
-function toSession(user) {
-  // Mimics what a Sanctum response might look like (user + token).
-  const { password, ...safeUser } = user;
-  return { ...safeUser, token: `demo-token-${user.id}` };
-}

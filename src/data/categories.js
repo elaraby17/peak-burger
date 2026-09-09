@@ -1,7 +1,7 @@
 // Centralized category data — the single source of truth for the menu's structure.
 // Do not hardcode category labels inside components; import from here instead.
 
-export const categories = [
+export const categories =[
   {
     id: "burgers",
     name: { en: "Burgers", ar: "سندوتشات البرجر" },
@@ -66,5 +66,6 @@ export const categories = [
     icon: "sparkles",
   },
 ];
+
 
 export const getCategoryById = (id) => categories.find((c) => c.id === id);

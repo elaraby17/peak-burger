@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search as SearchIcon, UtensilsCrossed } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
-import { products as allProducts } from "../../data/products";
-import { categories } from "../../data/categories";
+import { productService } from "../../services/productService";
+import { categoryService } from "../../services/categoryService";
 import ProductCard from "../../components/product/ProductCard";
 import CategoryCard from "../../components/menu/CategoryCard";
 import { ProductGridSkeleton } from "../../components/ui/Skeleton";
 import EmptyState from "../../components/ui/EmptyState";
-import Button from "../../components/ui/Button";
+import ErrorState from "../../components/ui/ErrorState";
 
 export default function Menu() {
   const { t, lang } = useLanguage();
@@ -16,12 +16,34 @@ export default function Menu() {
   const activeCategory = searchParams.get("category") || "all";
   const initialQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
+  const [allProducts, setAllProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  const loadProducts = () => {
+    setIsLoading(true);
+    setLoadError(false);
+    productService
+      .getAll()
+      .then((data) => setAllProducts(data))
+      .catch((err) => {
+        console.error("Failed to load menu from API", err);
+        setLoadError(true);
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   useEffect(() => {
     document.title = "Menu — Peak Burger";
-    const timeout = setTimeout(() => setIsLoading(false), 350);
-    return () => clearTimeout(timeout);
+    loadProducts();
+    // Categories fail quietly — the "All" tab/sidebar entry still works, and
+    // the search box doesn't depend on the category list, so a categories
+    // hiccup shouldn't block the whole page like a products failure does.
+    categoryService
+      .getAll()
+      .then(setCategories)
+      .catch((err) => console.error("Failed to load categories from API", err));
   }, []);
 
   useEffect(() => {
@@ -49,7 +71,7 @@ export default function Menu() {
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((p) =>
-        [p.name.en, p.name.ar, p.description.en, p.description.ar, p.category].some((field) =>
+        [p.name?.en, p.name?.ar, p.description?.en, p.description?.ar, p.category].some((field) =>
           field?.toLowerCase().includes(q)
         )
       );
@@ -57,7 +79,7 @@ export default function Menu() {
       list = list.filter((p) => p.category === activeCategory);
     }
     return list;
-  }, [query, activeCategory]);
+  }, [query, activeCategory, allProducts]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -123,6 +145,14 @@ export default function Menu() {
         <div>
           {isLoading ? (
             <ProductGridSkeleton count={8} />
+          ) : loadError ? (
+            <ErrorState
+              title={lang === "ar" ? "معرفناش نجيب المنيو" : "Couldn't load the menu"}
+              description={
+                lang === "ar" ? "تأكد إن السيرفر شغال وحاول تاني." : "Make sure the API is running and try again."
+              }
+              onRetry={loadProducts}
+            />
           ) : filtered.length === 0 ? (
             <EmptyState
               icon={UtensilsCrossed}

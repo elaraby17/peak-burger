@@ -3,10 +3,10 @@
 export const adminUserSeed = [
   {
     id: "admin_1",
-    name: "Peak Admin",
-    email: "admin@peakburger.com",
-    password: "admin123",
-    phone: "+20 100 111 2222",
+    name: "Mohamed Elaraby",
+    email: "arab@arab.com",
+    password: "3302856777",
+    phone: "01069880640",
     avatar: null,
     role: "admin",
   },

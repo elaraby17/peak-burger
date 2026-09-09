@@ -1,3 +1,4 @@
+// src/components/admin/ProductForm.jsx — استبدل بالكامل
 import { useEffect, useState } from "react";
 import { useLanguage } from "../../context/LanguageContext";
 import Input from "../ui/Input";
@@ -9,9 +10,8 @@ const emptyForm = {
   nameAr: "",
   descriptionEn: "",
   descriptionAr: "",
-  category: "",
+  category: "", // category *slug*, matches the <select> options below
   price: "",
-  image: "",
   popular: false,
   isNew: false,
   active: true,
@@ -21,6 +21,7 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
   const { lang } = useLanguage();
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
+  const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState("");
 
   useEffect(() => {
@@ -32,7 +33,6 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
       descriptionAr: initialProduct.description?.ar || "",
       category: initialProduct.category || "",
       price: initialProduct.price ?? "",
-      image: initialProduct.image || "",
       popular: Boolean(initialProduct.popular),
       isNew: Boolean(initialProduct.isNew),
       active: initialProduct.active !== false,
@@ -43,7 +43,13 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
   const update = (field) => (e) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setForm((f) => ({ ...f, [field]: value }));
-    if (field === "image") setPreview(e.target.value);
+  };
+
+  const onPickImage = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   const validate = () => {
@@ -52,6 +58,7 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
     if (!form.nameAr.trim()) next.nameAr = lang === "ar" ? "مطلوب" : "Required";
     if (!form.category) next.category = lang === "ar" ? "مطلوب" : "Required";
     if (!form.price || Number(form.price) <= 0) next.price = lang === "ar" ? "سعر غير صحيح" : "Enter a valid price";
+    if (!initialProduct && !imageFile) next.image = lang === "ar" ? "الصورة مطلوبة" : "Image is required";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -59,15 +66,18 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
+    const selectedCategory = categories.find((c) => c.id === form.category);
     onSubmit({
-      name: { en: form.nameEn, ar: form.nameAr },
-      description: { en: form.descriptionEn, ar: form.descriptionAr },
-      category: form.category,
+      categoryId: selectedCategory?.numericId,
+      nameEn: form.nameEn,
+      nameAr: form.nameAr,
+      descriptionEn: form.descriptionEn,
+      descriptionAr: form.descriptionAr,
       price: Number(form.price),
-      image: form.image || "/images/products/placeholder.jpg",
       popular: form.popular,
       isNew: form.isNew,
       active: form.active,
+      imageFile, // null on edit if the image wasn't changed - backend keeps the old one
     });
   };
 
@@ -91,7 +101,19 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
         </div>
         <Input label={lang === "ar" ? "الوصف بالإنجليزي" : "Description (English)"} value={form.descriptionEn} onChange={update("descriptionEn")} />
         <Input label={lang === "ar" ? "الوصف بالعربي" : "Description (Arabic)"} value={form.descriptionAr} onChange={update("descriptionAr")} />
-        <Input label={lang === "ar" ? "رابط الصورة" : "Image URL"} value={form.image} onChange={update("image")} placeholder="/images/products/example.jpg" />
+
+        <div>
+          <label className="mb-1.5 block text-sm font-semibold text-ink-soft">
+            {lang === "ar" ? "صورة المنتج" : "Product image"}
+          </label>
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={onPickImage}
+            className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-full file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-secondary-600"
+          />
+          {errors.image && <p className="mt-1 text-xs font-medium text-secondary">{errors.image}</p>}
+        </div>
 
         <div className="flex flex-wrap gap-6 pt-1">
           <label className="flex items-center gap-2 text-sm font-semibold text-ink">
@@ -117,15 +139,7 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
         <p className="mb-2 text-sm font-bold text-ink-soft">{lang === "ar" ? "معاينة الصورة" : "Image preview"}</p>
         <div className="aspect-square w-full overflow-hidden rounded-2xl bg-cream-100">
           {preview ? (
-            <img
-              src={preview}
-              alt="preview"
-              className="h-full w-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src =
-                  "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='300' height='300' fill='%23FCEACB'/%3E%3C/svg%3E";
-              }}
-            />
+            <img src={preview} alt="preview" className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center text-xs text-ink-soft">
               {lang === "ar" ? "لا توجد صورة" : "No image"}

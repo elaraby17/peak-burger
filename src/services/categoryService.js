@@ -1,60 +1,69 @@
-import { categoriesStore } from "../data/categoriesStore";
+// src/services/categoryService.js — استبدل بالكامل
+import api from "./api";
 
-const LATENCY = 200;
-const delay = (value) => new Promise((resolve) => setTimeout(() => resolve(value), LATENCY));
+function normalizeCategory(raw) {
+    if (!raw) return null;
+    return {
+        id: raw.slug ?? String(raw.id),
+        numericId: raw.id,
+        name: raw.name,
+        description: raw.description,
+        icon: raw.icon,
+        active: Boolean(Number(raw.active ?? 1)),
+    };
+}
 
-const nextId = (rows) => {
-  const ids = rows.map((r) => r.id).filter((id) => typeof id === "string" && id.startsWith("cat-"));
-  return `cat-${ids.length + 1}-${Date.now().toString(36)}`;
-};
+const unwrap = (res) => res.data.data;
+
+function toApiPayload(payload) {
+    return {
+        name_en: payload.name?.en ?? payload.nameEn,
+        name_ar: payload.name?.ar ?? payload.nameAr,
+        description_en: payload.description?.en ?? payload.descriptionEn ?? "",
+        description_ar: payload.description?.ar ?? payload.descriptionAr ?? "",
+        icon: payload.icon,
+        active: payload.active ? 1 : 0,
+    };
+}
 
 export const categoryService = {
-  // Future Laravel endpoint: GET /api/categories
-  getAll: () => delay([...categoriesStore.getAll()]),
+    // GET /api/categories
+    getAll: () =>
+        api
+            .get("/categories")
+            .then(unwrap)
+            .then((rows) => rows.map(normalizeCategory)),
 
-  // Future Laravel endpoint: GET /api/categories/{id}
-  getById: (id) => delay(categoriesStore.getAll().find((c) => c.id === id) ?? null),
+    // GET /api/categories/{id}
+    getById: (id) =>
+        api
+            .get(`/categories/${id}`)
+            .then(unwrap)
+            .then(normalizeCategory)
+            .catch((err) => {
+                if (err.response?.status === 404) return null;
+                throw err;
+            }),
 
-  // ---- Admin CRUD ----
+    // ---- Admin CRUD ----
 
-  // Future Laravel endpoint: POST /api/admin/categories
-  create: (category) => {
-    const rows = categoriesStore.getAll();
-    const created = { id: category.slug || nextId(rows), active: true, ...category };
-    categoriesStore.setAll([...rows, created]);
-    return delay(created);
-  },
+    // POST /api/categories
+    create: (payload) => api.post("/categories", toApiPayload(payload)).then(unwrap).then(normalizeCategory),
 
-  // Future Laravel endpoint: PUT /api/admin/categories/{id}
-  update: (id, updates) => {
-    const rows = categoriesStore.getAll();
-    let updated = null;
-    const next = rows.map((c) => {
-      if (c.id !== id) return c;
-      updated = { ...c, ...updates };
-      return updated;
-    });
-    categoriesStore.setAll(next);
-    return delay(updated);
-  },
+    // PUT /api/categories/{numericId}
+    // NOTE: Laravel route-model-binds on the numeric id, not the slug - pass
+    // the numeric id here (categories.find(c => c.id === slug).numericId).
+    update: (numericId, payload) => api.put(`/categories/${numericId}`, toApiPayload(payload)).then(unwrap).then(normalizeCategory),
 
-  // Future Laravel endpoint: DELETE /api/admin/categories/{id}
-  remove: (id) => {
-    const rows = categoriesStore.getAll();
-    categoriesStore.setAll(rows.filter((c) => c.id !== id));
-    return delay(true);
-  },
+    // DELETE /api/categories/{numericId}
+    remove: (numericId) => api.delete(`/categories/${numericId}`).then(() => true),
 
-  // Future Laravel endpoint: PATCH /api/admin/categories/{id}/toggle-active
-  toggleActive: (id) => {
-    const rows = categoriesStore.getAll();
-    let updated = null;
-    const next = rows.map((c) => {
-      if (c.id !== id) return c;
-      updated = { ...c, active: !(c.active !== false) };
-      return updated;
-    });
-    categoriesStore.setAll(next);
-    return delay(updated);
-  },
+    // No dedicated toggle-active route yet - reuse update() with current fields.
+    toggleActive: (category) =>
+        categoryService.update(category.numericId, {
+            name: category.name,
+            description: category.description,
+            icon: category.icon,
+            active: !(category.active !== false),
+        }),
 };

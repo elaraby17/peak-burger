@@ -1,66 +1,52 @@
-// Product sizes live embedded on each product (product.sizes), matching the
-// existing customer-facing structure (ProductDetails size picker). This
-// service just gives the admin a flat, table-friendly view over the same
-// data, going through productsStore so edits are shared everywhere.
-import { productsStore } from "../data/productsStore";
+// src/services/sizeService.js — استبدل بالكامل
+import api from "./api";
 
-const LATENCY = 200;
-const delay = (value) => new Promise((resolve) => setTimeout(() => resolve(value), LATENCY));
+// Backed by ProductSizeController. Note: ProductSizeResource names the
+// nested product object "product_id" (it's actually the full Product
+// resource, not a plain number) - normalizeSize() below unpacks that back
+// into { productId, productName }.
 
-function flatten() {
-  return productsStore.getAll().flatMap((p) =>
-    (p.sizes || []).map((s) => ({
-      id: `${p.id}::${s.id}`,
-      productId: p.id,
-      productName: p.name,
-      sizeKey: s.id,
-      labelEn: s.label.en,
-      labelAr: s.label.ar,
-      price: s.price,
-      isDefault: p.sizes[0]?.id === s.id,
-      active: s.active !== false,
-    }))
-  );
+function normalizeSize(raw) {
+    if (!raw) return null;
+    const product = raw.product_id; // nested Product object, despite the key name
+    return {
+        id: raw.id,
+        productId: typeof product === "object" ? product?.id : product,
+        productName: typeof product === "object" ? product?.name : undefined,
+        sizeKey: raw.size_key,
+        label: raw.label,
+        price: raw.price !== null && raw.price !== undefined ? Number(raw.price) : null,
+        sortOrder: raw.sort_order,
+        active: Boolean(Number(raw.active ?? 1)),
+    };
+}
+
+const unwrap = (res) => res.data.data;
+
+function toApiPayload(payload) {
+    return {
+        product_id: payload.productId,
+        size_key: payload.sizeKey,
+        label_en: payload.labelEn,
+        label_ar: payload.labelAr,
+        price: payload.price,
+    };
 }
 
 export const sizeService = {
-  // Future Laravel endpoint: GET /api/admin/product-sizes
-  getAll: () => delay(flatten()),
+    // GET /api/product-sizes
+    getAll: () =>
+        api
+            .get("/product-sizes")
+            .then(unwrap)
+            .then((rows) => rows.map(normalizeSize)),
 
-  // Future Laravel endpoint: PUT /api/admin/product-sizes/{productId}/{sizeKey}
-  update: (productId, sizeKey, updates) => {
-    const rows = productsStore.getAll();
-    let updatedRow = null;
-    const next = rows.map((p) => {
-      if (String(p.id) !== String(productId)) return p;
-      const sizes = (p.sizes || []).map((s) => {
-        if (s.id !== sizeKey) return s;
-        const merged = {
-          ...s,
-          price: updates.price ?? s.price,
-          active: updates.active ?? s.active,
-          label: {
-            en: updates.labelEn ?? s.label.en,
-            ar: updates.labelAr ?? s.label.ar,
-          },
-        };
-        updatedRow = merged;
-        return merged;
-      });
-      return { ...p, sizes };
-    });
-    productsStore.setAll(next);
-    return delay(updatedRow);
-  },
+    // POST /api/product-sizes
+    create: (payload) => api.post("/product-sizes", toApiPayload(payload)).then(unwrap).then(normalizeSize),
 
-  // Future Laravel endpoint: DELETE /api/admin/product-sizes/{productId}/{sizeKey}
-  remove: (productId, sizeKey) => {
-    const rows = productsStore.getAll();
-    const next = rows.map((p) => {
-      if (String(p.id) !== String(productId)) return p;
-      return { ...p, sizes: (p.sizes || []).filter((s) => s.id !== sizeKey) };
-    });
-    productsStore.setAll(next);
-    return delay(true);
-  },
+    // PUT /api/product-sizes/{id}
+    update: (id, payload) => api.put(`/product-sizes/${id}`, toApiPayload(payload)).then(unwrap).then(normalizeSize),
+
+    // DELETE /api/product-sizes/{id}
+    remove: (id) => api.delete(`/product-sizes/${id}`).then(() => true),
 };

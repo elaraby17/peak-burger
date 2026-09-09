@@ -4,7 +4,8 @@ import { Heart, ChevronLeft, PackageSearch } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { useCart } from "../../context/CartContext";
 import { useFavorites } from "../../context/FavoritesContext";
-import { getProductBySlugOrId, sauceLabels } from "../../data/products";
+import { productService } from "../../services/productService";
+import { categoryService } from "../../services/categoryService";
 import Price from "../../components/ui/Price";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
@@ -21,7 +22,7 @@ export default function ProductDetails() {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const [isLoading, setIsLoading] = useState(true);
-  const product = useMemo(() => getProductBySlugOrId(id), [id]);
+  const product = useMemo(() => productService.getProductById(id), [id]);
   const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] ?? null);
   const [selectedSauce, setSelectedSauce] = useState(product?.sauceOptions?.[0] ?? null);
   const [quantity, setQuantity] = useState(1);
