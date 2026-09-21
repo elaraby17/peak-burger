@@ -41,22 +41,12 @@ export default function Footer() {
               <img src={logo} alt="Peak Burger" className="h-11 w-11 rounded-full object-cover" />
               <span className="font-display text-lg font-extrabold text-white">Peak Burger</span>
             </div>
-            <p className="max-w-xs text-sm text-cream-100/60">
-              {lang === "ar" ? "فريش. سخن. لا يُنسى." : "Fresh. Hot. Unforgettable."}
-            </p>
+            <p className="max-w-xs text-sm text-cream-100/60">{lang === "ar" ? "فريش. سخن. لا يُنسى." : "Fresh. Hot. Unforgettable."}</p>
             <div className="mt-4 flex gap-2">
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-ink"
-              >
+              <a href="#" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-ink">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-ink"
-              >
+              <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-ink">
                 <Instagram className="h-4 w-4" />
               </a>
             </div>
@@ -97,7 +87,19 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-cream-100/50">
-          © 2026 Peak Burger. All rights reserved.
+          <div class="en !text-right">
+            <span class="">
+              <span class="">&lt;</span>
+              <span class="">Developed by="</span>
+            </span>
+            <span class="font-w-bold">
+              <a href="https://www.facebook.com/mohamed.el.araby.833588/" class="text-secondary-500 hover:clr-text-primary smooth">
+                El araby
+              </a>
+              <span> , </span>
+            </span>{" "}
+            andPowered=true<span class=""> /&gt;</span>
+          </div>
         </div>
       </div>
     </footer>
