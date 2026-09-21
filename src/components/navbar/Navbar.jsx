@@ -27,6 +27,7 @@ const navLinks = [
 ];
 
 const PHONE_NUMBER = "+20 1069880640";
+const ORDER_ROUTE = "/menu"; // same route Hero's "Order Now" uses
 
 export default function Navbar() {
   const { t, lang, toggleLang } = useLanguage();
@@ -48,7 +49,7 @@ export default function Navbar() {
   }, [justAddedId]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -61,6 +62,12 @@ export default function Navbar() {
     };
   }, [drawerOpen]);
 
+  // Close the search field whenever the header docks, so it never
+  // lingers open over the (now solid) scrolled header.
+  useEffect(() => {
+    if (scrolled) setSearchOpen(false);
+  }, [scrolled]);
+
   const submitSearch = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -70,42 +77,67 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40">
-      {/* Utility strip — contact + hours, desktop only */}
-      <div className="hidden bg-ink lg:block">
-        <div className="mx-auto flex h-9 max-w-7xl items-center px-6 text-xs font-medium text-cream-100/70 lg:px-8">
-          <a
-            href={`tel:${PHONE_NUMBER.replace(/\s/g, "")}`}
-            className="flex items-center gap-1.5 border-e border-cream-100/15 pe-4 transition-colors hover:text-primary"
-          >
-            <Phone className="h-3.5 w-3.5" />
-            {PHONE_NUMBER}
-          </a>
-          <span className="flex items-center gap-1.5 ps-4">
-            <Clock className="h-3.5 w-3.5" />
-            {lang === "ar" ? "مفتوح يوميًا حتى 12 منتصف الليل" : "Open daily until 12 AM"}
-          </span>
-          <button
-            onClick={toggleLang}
-            className="ms-auto flex items-center gap-1.5 transition-colors hover:text-primary"
-            aria-label="Switch language"
-          >
-            <Languages className="h-3.5 w-3.5" />
-            {lang === "en" ? "العربية" : "English"}
-          </button>
-        </div>
-      </div>
+    // Fixed + transparent: the header floats over the Hero instead of
+    // reserving its own row above it. See the note at the bottom of the
+    // reply about giving non-Hero pages top padding to clear this.
+    <header className="fixed inset-x-0 top-0 z-50">
+      {/* Cinematic gradient behind the header, only while parked on the Hero.
+          Independent of scrolled state's solid background below. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/75 via-ink/35 to-transparent transition-opacity duration-300",
+          scrolled ? "opacity-0" : "opacity-100"
+        )}
+      />
 
-      {/* Main bar */}
       <div
         className={cn(
-          "border-b bg-cream transition-shadow duration-300",
-          scrolled ? "border-ink/10 shadow-[0_6px_24px_-12px_rgba(0,0,0,0.35)]" : "border-transparent"
+          "relative transition-[background-color,backdrop-filter,border-color,box-shadow] duration-300",
+          scrolled
+            ? "border-b border-white/10 bg-ink/90 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-md"
+            : "border-b border-transparent bg-transparent backdrop-blur-[2px]"
         )}
       >
-        <div className="mx-auto flex h-[68px] max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+        {/* Utility strip — collapses away once docked, desktop only */}
+        <div
+          className={cn(
+            "hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out lg:block",
+            scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
+          )}
+        >
+          <div className="mx-auto flex h-9 max-w-7xl items-center px-6 text-xs font-medium text-cream-100/75 lg:px-8">
+            <a
+              href={`tel:${PHONE_NUMBER.replace(/\s/g, "")}`}
+              className="flex items-center gap-1.5 border-e border-cream-100/20 pe-4 transition-colors hover:text-primary"
+            >
+              <Phone className="h-3.5 w-3.5" />
+              {PHONE_NUMBER}
+            </a>
+            <span className="flex items-center gap-1.5 ps-4">
+              <Clock className="h-3.5 w-3.5" />
+              {lang === "ar" ? "مفتوح يوميًا حتى 12 منتصف الليل" : "Open daily until 12 AM"}
+            </span>
+            <button
+              onClick={toggleLang}
+              className="ms-auto flex items-center gap-1.5 transition-colors hover:text-primary"
+              aria-label="Switch language"
+            >
+              <Languages className="h-3.5 w-3.5" />
+              {lang === "en" ? "العربية" : "English"}
+            </button>
+          </div>
+        </div>
+
+        {/* Main bar */}
+        <div
+          className={cn(
+            "mx-auto flex max-w-7xl items-center gap-6 px-4 transition-[height] duration-300 sm:px-6 lg:px-8",
+            scrolled ? "h-16" : "h-20"
+          )}
+        >
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-cream-50 transition-colors hover:bg-white/10 lg:hidden"
             onClick={() => setDrawerOpen(true)}
             aria-label="Open menu"
           >
@@ -116,11 +148,11 @@ export default function Navbar() {
             <img
               src={logo}
               alt="Peak Burger"
-              className="h-11 w-11 rounded-full object-cover ring-[3px] ring-ink/5"
+              className="h-10 w-10 rounded-full object-cover ring-2 ring-white/20"
             />
             <div className="hidden leading-none sm:block">
-              <span className="block font-display text-lg font-extrabold tracking-tight text-ink">
-                New brand
+              <span className="block font-display text-lg font-extrabold tracking-tight text-white">
+                Peak Burger
               </span>
               <span className="mt-0.5 block text-[11px] font-semibold text-primary">
                 {lang === "ar" ? "شواء طازة كل يوم" : "Flame-grilled daily"}
@@ -136,8 +168,10 @@ export default function Navbar() {
                 end={link.to === "/"}
                 className={({ isActive }) =>
                   cn(
-                    "rounded-full px-4 py-2 text-sm font-bold transition-colors",
-                    isActive ? "bg-ink text-cream" : "text-ink-soft hover:bg-ink/5 hover:text-ink"
+                    "border-b-2 px-3.5 py-2 text-sm font-bold transition-colors",
+                    isActive
+                      ? "border-primary text-white"
+                      : "border-transparent text-cream-100/80 hover:text-white"
                   )
                 }
               >
@@ -151,8 +185,8 @@ export default function Navbar() {
               onClick={() => setSearchOpen((v) => !v)}
               aria-expanded={searchOpen}
               className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5",
-                searchOpen && "bg-ink/5 text-secondary"
+                "flex h-10 w-10 items-center justify-center rounded-full text-cream-50 transition-colors hover:bg-white/10",
+                searchOpen && "bg-white/10 text-primary"
               )}
               aria-label="Search"
             >
@@ -161,7 +195,7 @@ export default function Navbar() {
 
             <Link
               to="/account/favorites"
-              className="hidden h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 sm:flex"
+              className="hidden h-10 w-10 items-center justify-center rounded-full text-cream-50 transition-colors hover:bg-white/10 sm:flex"
               aria-label="Favorites"
             >
               <Heart className="h-5 w-5" />
@@ -169,7 +203,7 @@ export default function Navbar() {
 
             <Link
               to="/cart"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full text-cream-50 transition-colors hover:bg-white/10"
               aria-label="Cart"
             >
               <ShoppingBag className="h-5 w-5" />
@@ -187,16 +221,16 @@ export default function Navbar() {
 
             <Link
               to={isAuthenticated ? "/account" : "/login"}
-              className="hidden h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 sm:flex"
+              className="hidden h-10 w-10 items-center justify-center rounded-full text-cream-50 transition-colors hover:bg-white/10 sm:flex"
               aria-label="Account"
             >
               <User className="h-5 w-5" />
             </Link>
 
-            <span className="mx-1 hidden h-6 w-px bg-ink/10 md:block" />
+            <span className="mx-1 hidden h-6 w-px bg-white/15 lg:block" />
 
-            <Link to="/menu" className="hidden md:block">
-              <Button variant="gold" size="md" className="gap-1.5 whitespace-nowrap">
+            <Link to={ORDER_ROUTE} className="hidden lg:block">
+              <Button variant="gold" size="sm" className="gap-1.5 !px-4">
                 {lang === "ar" ? "اطلب الآن" : "Order Now"}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Button>
@@ -204,33 +238,30 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* Search bar — solid card so it stays readable over the Hero image too */}
         <div
           className={cn(
-            "overflow-hidden border-t border-ink/5 transition-[max-height,opacity] duration-300 ease-out",
+            "overflow-hidden transition-[max-height,opacity] duration-300 ease-out",
             searchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
           )}
         >
-          <div className="px-4 py-3 sm:px-6 lg:px-8">
+          <div className="border-t border-white/10 bg-ink/95 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8">
             <form
               onSubmit={submitSearch}
-              className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-ink/10 bg-white px-4 py-2.5 focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/10"
+              className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20"
             >
-              <Search className="h-4 w-4 shrink-0 text-ink-soft" />
+              <Search className="h-4 w-4 shrink-0 text-cream-100/60" />
               <input
                 autoFocus={searchOpen}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={lang === "ar" ? "دور على أكلة..." : "Search the menu..."}
-                className="flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft/50"
+                className="flex-1 bg-transparent text-sm text-white outline-none placeholder:text-cream-100/40"
               />
             </form>
           </div>
         </div>
       </div>
-
-      {/* Signature accent line */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-primary via-secondary to-primary" />
 
       {/* Mobile drawer */}
       <div
@@ -298,7 +329,7 @@ export default function Navbar() {
           </nav>
 
           <div className="mt-auto flex flex-col gap-3 border-t border-ink/10 px-4 py-4">
-            <Link to="/menu" onClick={() => setDrawerOpen(false)}>
+            <Link to={ORDER_ROUTE} onClick={() => setDrawerOpen(false)}>
               <Button variant="gold" size="lg" className="w-full gap-1.5">
                 {lang === "ar" ? "اطلب الآن" : "Order Now"}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
