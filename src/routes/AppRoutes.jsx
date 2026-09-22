@@ -9,6 +9,8 @@ import AdminGuestRoute from "./AdminGuestRoute";
 
 import Home from "../pages/Home";
 import Menu from "../pages/Menu";
+import Offers from "../pages/Offers";
+import OfferDetail from "../pages/Offers/OfferDetail";
 import Product from "../pages/Product";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
@@ -58,6 +60,8 @@ export default function AppRoutes() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/offers" element={<Offers />} />
+        <Route path="/offers/:id" element={<OfferDetail />} />
         <Route path="/menu/:id" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />} />
