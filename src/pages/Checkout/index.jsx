@@ -96,12 +96,12 @@ export default function Checkout() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-6 font-display text-3xl font-extrabold text-ink">{lang === "ar" ? "استكمال الطلب" : "Checkout"}</h1>
+      <h1 className="mb-6 font-display text-3xl font-extrabold text-text">{lang === "ar" ? "استكمال الطلب" : "Checkout"}</h1>
 
       <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <div className="space-y-6">
-          <section className="rounded-2xl bg-white p-6 shadow-card">
-            <h2 className="mb-4 font-display text-lg font-bold text-ink">{lang === "ar" ? "بيانات العميل" : "Customer"}</h2>
+          <section className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+            <h2 className="mb-4 font-display text-lg font-bold text-text">{lang === "ar" ? "بيانات العميل" : "Customer"}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <Input
                 label={lang === "ar" ? "الاسم بالكامل" : "Full name"}
@@ -127,8 +127,8 @@ export default function Checkout() {
             </div>
           </section>
 
-          <section className="rounded-2xl bg-white p-6 shadow-card">
-            <h2 className="mb-4 font-display text-lg font-bold text-ink">{lang === "ar" ? "بيانات التوصيل" : "Delivery"}</h2>
+          <section className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+            <h2 className="mb-4 font-display text-lg font-bold text-text">{lang === "ar" ? "بيانات التوصيل" : "Delivery"}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <Select label={lang === "ar" ? "المحافظة" : "Governorate"} value={form.governorate} onChange={update("governorate")}>
                 {governorates.map((g) => (
@@ -156,23 +156,23 @@ export default function Checkout() {
             </div>
           </section>
 
-          <section className="rounded-2xl bg-white p-6 shadow-card">
-            <h2 className="mb-4 font-display text-lg font-bold text-ink">{lang === "ar" ? "طريقة الدفع" : "Payment"}</h2>
+          <section className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+            <h2 className="mb-4 font-display text-lg font-bold text-text">{lang === "ar" ? "طريقة الدفع" : "Payment"}</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => setPayment("cod")}
                 className={cn(
                   "flex items-center gap-3 rounded-xl border-2 p-4 text-start",
-                  payment === "cod" ? "border-secondary bg-secondary/5" : "border-ink/10"
+                  payment === "cod" ? "border-secondary bg-secondary/5" : "border-line"
                 )}
               >
                 <Banknote className="h-5 w-5 text-secondary" />
-                <span className="font-semibold text-ink">{lang === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery"}</span>
+                <span className="font-semibold text-text">{lang === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery"}</span>
               </button>
-              <button type="button" disabled className="flex cursor-not-allowed items-center gap-3 rounded-xl border-2 border-ink/10 p-4 text-start opacity-50">
-                <Smartphone className="h-5 w-5 text-ink-soft" />
-                <span className="font-semibold text-ink-soft">
+              <button type="button" disabled className="flex cursor-not-allowed items-center gap-3 rounded-xl border-2 border-line p-4 text-start opacity-50">
+                <Smartphone className="h-5 w-5 text-text-muted" />
+                <span className="font-semibold text-text-muted">
                   {lang === "ar" ? "الدفع أونلاين — قريبًا" : "Online Payment — Coming Soon"}
                 </span>
               </button>
@@ -180,29 +180,29 @@ export default function Checkout() {
           </section>
         </div>
 
-        <div className="h-fit space-y-4 rounded-2xl bg-white p-6 shadow-card">
-          <h2 className="font-display text-lg font-bold text-ink">{lang === "ar" ? "ملخص الطلب" : "Order Summary"}</h2>
+        <div className="h-fit space-y-4 rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+          <h2 className="font-display text-lg font-bold text-text">{lang === "ar" ? "ملخص الطلب" : "Order Summary"}</h2>
           <ul className="max-h-48 space-y-2 overflow-y-auto text-sm">
             {items.map((item) => (
-              <li key={item.lineId} className="flex justify-between text-ink-soft">
+              <li key={item.lineId} className="flex justify-between text-text-muted">
                 <span className="truncate pe-2">
                   {item.quantity}× {t(item.name)}
                 </span>
-                <Price value={item.unitPrice * item.quantity} className="text-ink shrink-0" />
+                <Price value={item.unitPrice * item.quantity} className="text-text shrink-0" />
               </li>
             ))}
           </ul>
-          <div className="border-t border-ink/10 pt-3 text-sm">
-            <div className="flex justify-between text-ink-soft">
+          <div className="border-t border-line pt-3 text-sm">
+            <div className="flex justify-between text-text-muted">
               <span>{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-              <Price value={subtotal} className="text-ink" />
+              <Price value={subtotal} className="text-text" />
             </div>
-            <div className="mt-1 flex justify-between text-ink-soft">
+            <div className="mt-1 flex justify-between text-text-muted">
               <span>{lang === "ar" ? "التوصيل" : "Delivery"}</span>
-              {deliveryFee === 0 ? <span className="font-bold text-secondary">{lang === "ar" ? "مجاني" : "Free"}</span> : <Price value={deliveryFee} className="text-ink" />}
+              {deliveryFee === 0 ? <span className="font-bold text-secondary">{lang === "ar" ? "مجاني" : "Free"}</span> : <Price value={deliveryFee} className="text-text" />}
             </div>
           </div>
-          <div className="flex justify-between border-t border-ink/10 pt-3 font-display text-lg font-bold text-ink">
+          <div className="flex justify-between border-t border-line pt-3 font-display text-lg font-bold text-text">
             <span>{lang === "ar" ? "الإجمالي" : "Total"}</span>
             <Price value={total} />
           </div>

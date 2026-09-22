@@ -203,7 +203,7 @@ export default function Hero() {
     <section
       aria-roledescription="carousel"
       aria-label={isAr ? "عروض المطعم" : "Restaurant offers"}
-      className="relative h-screen touch-pan-y overflow-hidden bg-ink pt-16 sm:h-[620px] md:h-screen md:max-h-screen md:min-h-[580px]"
+      className="relative h-screen touch-pan-y overflow-hidden bg-ink-deep pt-16 sm:h-[620px] md:h-screen md:max-h-screen md:min-h-[580px]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -241,15 +241,15 @@ export default function Hero() {
                   className={`h-full w-full object-cover ${active ? "so-zoom" : ""}`}
                 />
                 {/* mobile-only fade into the dark background */}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-transparent md:hidden" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-deep via-ink-deep/25 to-transparent md:hidden" />
               </div>
             </div>
           );
         })}
 
         {/* ── LAYER 2: cinematic overlay (md+). Text side is always dark, whatever the photo ── */}
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-ink from-[8%] via-ink/70 via-[42%] to-transparent to-[85%] md:block rtl:bg-gradient-to-l" />
-        <div className="absolute inset-x-0 bottom-0 hidden h-1/3 bg-gradient-to-t from-ink to-transparent md:block" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-ink-deep from-[8%] via-ink-deep/70 via-[42%] to-transparent to-[85%] md:block rtl:bg-gradient-to-l" />
+        <div className="absolute inset-x-0 bottom-0 hidden h-1/3 bg-gradient-to-t from-ink-deep to-transparent md:block" />
       </div>
 
       {/* ── LAYER 3: decorative graphics (independent of the photo) ── */}
@@ -269,7 +269,7 @@ export default function Hero() {
             <Stamp>{t(offer.callout ?? DEFAULT_CALLOUT)}</Stamp>
             {note && (
               <p
-                className="so-rise flex max-w-[15rem] items-center gap-3 text-2xl leading-tight text-cream-100 rtl:text-lg rtl:font-bold"
+                className="so-rise flex max-w-[15rem] items-center gap-3 text-2xl leading-tight text-text-soft rtl:text-lg rtl:font-bold"
                 style={{ ...handStyle, ...d(450) }}
               >
                 <span aria-hidden="true" className="h-px w-8 shrink-0 bg-primary/70" />
@@ -304,7 +304,7 @@ export default function Hero() {
               {t(offer.badge)}
             </span>
             <span
-              className="so-pop rounded-md bg-primary px-2.5 py-1 text-xs font-extrabold text-ink"
+              className="so-pop rounded-md bg-primary px-2.5 py-1 text-xs font-extrabold text-text-dark"
               style={d(80)}
             >
               {t(offer.discount)}
@@ -328,7 +328,7 @@ export default function Hero() {
 
           {/* 7: description */}
           <p
-            className="so-rise mx-auto mt-4 max-w-md text-base text-cream-100/80 sm:text-lg md:mx-0 md:mt-6"
+            className="so-rise mx-auto mt-4 max-w-md text-base text-text-soft sm:text-lg md:mx-0 md:mt-6"
             style={d(200)}
           >
             {t(offer.description)}
@@ -337,7 +337,7 @@ export default function Hero() {
           {/* note: small line on mobile/tablet, floating annotation on lg+ */}
           {note && (
             <p
-              className="so-rise mt-3 flex items-center justify-center gap-3 text-xl text-cream-100 rtl:text-base rtl:font-bold md:justify-start lg:hidden"
+              className="so-rise mt-3 flex items-center justify-center gap-3 text-xl text-text-soft rtl:text-base rtl:font-bold md:justify-start lg:hidden"
               style={{ ...handStyle, ...d(260) }}
             >
               <span aria-hidden="true" className="h-px w-8 bg-primary/70" />
@@ -361,7 +361,7 @@ export default function Hero() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-full !border-white/30 !text-white hover:!bg-white hover:!text-ink"
+                className="w-full !border-white/30 !text-white hover:!bg-white hover:!text-text-dark"
               >
                 {isAr ? "استكشف العرض" : "Explore Offer"}
               </Button>

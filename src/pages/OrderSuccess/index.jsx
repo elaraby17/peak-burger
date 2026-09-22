@@ -34,24 +34,24 @@ export default function OrderSuccess() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary-100 animate-popIn">
-        <CheckCircle2 className="h-10 w-10 text-secondary" />
+      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/15 animate-popIn">
+        <CheckCircle2 className="h-10 w-10 text-primary" />
       </div>
-      <h1 className="mt-6 font-display text-3xl font-extrabold text-ink">
+      <h1 className="mt-6 font-display text-3xl font-extrabold text-text">
         {lang === "ar" ? "تم استلام طلبك بنجاح!" : "Your order has been placed successfully!"}
       </h1>
-      <p className="mt-2 text-ink-soft">
-        {lang === "ar" ? "رقم طلبك هو" : "Your order number is"} <span className="font-display font-bold text-ink">{order.id}</span>
+      <p className="mt-2 text-text-muted">
+        {lang === "ar" ? "رقم طلبك هو" : "Your order number is"} <span className="font-display font-bold text-text">{order.id}</span>
       </p>
 
-      <div className="mt-8 rounded-2xl bg-white p-6 text-start shadow-card">
-        <div className="flex items-center justify-between border-b border-ink/10 pb-3">
-          <span className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+      <div className="mt-8 rounded-2xl border border-line bg-surface-50 p-6 text-start shadow-card">
+        <div className="flex items-center justify-between border-b border-line pb-3">
+          <span className="flex items-center gap-2 text-sm font-semibold text-text-muted">
             <Package className="h-4 w-4" /> {order.items?.length ?? 0} {lang === "ar" ? "صنف" : "items"}
           </span>
-          <Price value={order.total} className="text-ink" />
+          <Price value={order.total} className="text-text" />
         </div>
-        <ul className="mt-3 space-y-1 text-sm text-ink-soft">
+        <ul className="mt-3 space-y-1 text-sm text-text-muted">
           {order.items?.slice(0, 4).map((item) => (
             <li key={item.lineId} className="flex justify-between">
               <span>

@@ -7,14 +7,14 @@ export default function QuantitySelector({ value, onIncrease, onDecrease, min = 
     md: "h-10 w-10",
   };
   return (
-    <div className={cn("inline-flex items-center gap-3 rounded-full bg-ink/5 p-1", className)}>
+    <div className={cn("inline-flex items-center gap-3 rounded-full bg-white/5 p-1", className)}>
       <button
         type="button"
         onClick={onDecrease}
         disabled={value <= min}
         aria-label="Decrease quantity"
         className={cn(
-          "flex items-center justify-center rounded-full bg-white text-ink shadow-card transition-transform active:scale-90 disabled:opacity-40",
+          "flex items-center justify-center rounded-full bg-surface-50 text-text shadow-card transition-transform active:scale-90 disabled:opacity-40",
           sizes[size]
         )}
       >

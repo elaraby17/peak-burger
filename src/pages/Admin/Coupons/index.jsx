@@ -71,8 +71,8 @@ export default function AdminCoupons() {
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (c) => <StatusBadge status={c.active ? "active" : "inactive"} label={c.active ? (lang === "ar" ? "مفعّل" : "Active") : (lang === "ar" ? "متوقف" : "Inactive")} /> },
     { key: "actions", header: "", render: (c) => (
       <div className="flex gap-1">
-        <button onClick={() => handleToggle(c)} className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100"><Power className="h-4 w-4" /></button>
-        <button onClick={() => handleDelete(c)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary-50"><Trash2 className="h-4 w-4" /></button>
+        <button onClick={() => handleToggle(c)} className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover"><Power className="h-4 w-4" /></button>
+        <button onClick={() => handleDelete(c)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary/15"><Trash2 className="h-4 w-4" /></button>
       </div>
     ) },
   ];
@@ -80,7 +80,7 @@ export default function AdminCoupons() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "الكوبونات" : "Coupons"}</h1>
+        <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "الكوبونات" : "Coupons"}</h1>
         <Button variant="primary" onClick={() => setIsCreating(true)}><Plus className="h-4 w-4" />{lang === "ar" ? "إضافة كوبون" : "Add coupon"}</Button>
       </div>
 

@@ -8,23 +8,10 @@ import { toastSuccess } from "../../utils/alerts";
 import { cn } from "../../utils/cn";
 
 const FALLBACK_IMG =
-    "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23FCEACB'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='18' fill='%23B37F00' text-anchor='middle' dy='.3em'%3EPeak Burger%3C/text%3E%3C/svg%3E";
+    "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23181818'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='18' fill='%23F5B400' text-anchor='middle' dy='.3em'%3EPeak Burger%3C/text%3E%3C/svg%3E";
 
-/* الترتيب (#1, #2 ...) بيظهر لحد المركز ده، وبعده بيظهر لهب بس */
 const MAX_RANK_SHOWN = 5;
 
-/**
- * كارت "الأكثر مبيعًا".
- *
- * عادي: كارت أبيض بإطار ذهبي متدرج، صورة كبيرة، وزر إضافة ذهبي واضح.
- * هوفر: الكارت اللي عليه الماوس بس (group على كل كارت لوحده) بيقلب أحمر (secondary)،
- * الصورة بتذوب في الأحمر من تحت، النصوص بتقلب أبيض، والذهبي بيفضل في الإطار
- * والشارة والنجمة والخط الزخرفي وزر الإضافة.
- *
- * props:
- * - product
- * - rank (اختياري): ترتيب المنتج في الأكثر مبيعًا، يبدأ من 1
- */
 export default function BestSellerCard({ product, rank, className }) {
     const { t, lang } = useLanguage();
     const { addItem } = useCart();
@@ -56,17 +43,15 @@ export default function BestSellerCard({ product, rank, className }) {
         <Link
             to={`/menu/${product.slug}`}
             className={cn(
-                /* الطبقة الخارجية = الإطار الذهبي المتدرج (1.5px). عند الهوفر بيبقى ذهبي كامل حوالين الكارت الأحمر */
-                "group relative flex h-full w-full rounded-[1.75rem] bg-gradient-to-br from-gold via-gold/25 to-gold p-[1.5px]",
-                "shadow-card transition-[transform,box-shadow] duration-300 hover:via-gold",
-                "hover:-translate-y-1.5 hover:shadow-card-hover",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2",
+"group relative flex h-full w-full rounded-[1.75rem] border border-white/[0.07] bg-[#111111]",
+            "shadow-[0_14px_32px_-18px_rgba(0,0,0,0.85)] transition-[transform,box-shadow,background-color,border-color] duration-300",
+            "hover:-translate-y-1.5 hover:border-white/[0.14] hover:bg-[#181818] hover:shadow-[0_22px_44px_-20px_rgba(0,0,0,0.95)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]",
                 className
             )}
         >
-            <div className="relative flex w-full flex-col overflow-hidden rounded-[calc(1.75rem-1.5px)] bg-white transition-colors duration-300 group-hover:bg-secondary">
-                {/* ---------- الصورة: العنصر الأساسي في الكارت ---------- */}
-                <div className="relative aspect-[5/4] w-full overflow-hidden bg-cream-100">
+            <div className="relative flex w-full flex-col overflow-hidden rounded-[1.75rem]">
+                <div className="relative aspect-[5/4] w-full overflow-hidden bg-[#181818]">
                     <img
                         src={product.image}
                         alt={t(product.name)}
@@ -79,14 +64,10 @@ export default function BestSellerCard({ product, rank, className }) {
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
 
-                    {/* تدرج غامق خفيف فوق عشان الشارة والقلب يبانوا على أي صورة */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/30 via-transparent to-transparent" />
-                    {/* عند الهوفر: الصورة بتذوب في الأحمر من تحت */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-secondary via-secondary/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-deep/40 via-transparent to-transparent" />
 
-                    {/* شارة الأكثر مبيعًا: صغيرة داخل الصورة ومش بتغطي المنتج */}
-                    <div className="absolute start-3 top-3 z-10 inline-flex items-center gap-2 rounded-full bg-gold py-1 pe-3 ps-1 text-[11px] font-extrabold uppercase tracking-wider text-ink shadow-[0_4px_12px_rgba(20,15,10,0.3)] rtl:tracking-normal">
-                        <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-ink px-1.5 text-gold">
+                    <div className="absolute start-3 top-3 z-10 inline-flex items-center gap-2 rounded-full bg-primary py-1 pe-3 ps-1 text-[11px] font-extrabold uppercase tracking-wider text-text-dark rtl:tracking-normal">
+                        <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-ink-deep px-1.5 text-primary">
                             {showRank ? (
                                 <span dir="ltr" className="font-display text-xs leading-none">
                                     #{rank}
@@ -111,54 +92,52 @@ export default function BestSellerCard({ product, rank, className }) {
                                     : "Add to favorites"
                         }
                         aria-pressed={favorite}
-                        className="absolute end-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/85 shadow-card ring-1 ring-white/60 backdrop-blur-md transition duration-200 hover:scale-110 hover:bg-white active:scale-90"
+                        className="absolute end-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-ink-deep/70 text-text shadow-card ring-1 ring-white/10 backdrop-blur-md transition duration-200 hover:scale-110 active:scale-90"
                     >
                         <Heart
                             className={cn(
                                 "h-5 w-5 transition-colors",
-                                favorite ? "fill-secondary text-secondary" : "text-ink-soft hover:text-secondary"
+                                favorite ? "fill-secondary text-secondary" : "text-text-muted hover:text-secondary"
                             )}
                         />
                     </button>
                 </div>
 
-                {/* ---------- المحتوى ---------- */}
                 <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-                    {/* خط ذهبي صغير: لمسة هوية بتفضل ظاهرة على الأحمر */}
-                    <span aria-hidden className="mb-3 block h-1 w-8 rounded-full bg-gold" />
+                    <span aria-hidden className="mb-3 block h-1 w-8 rounded-full bg-primary" />
 
                     <div className="flex items-start justify-between gap-3">
-                        <h3 className="line-clamp-1 font-display text-xl font-extrabold leading-snug text-ink transition-colors duration-300 group-hover:text-white">
+                        <h3 className="line-clamp-1 font-display text-xl font-extrabold leading-snug text-white">
                             {t(product.name)}
                         </h3>
                         {product.rating ? (
-                            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gold/15 px-2 py-1 text-xs font-bold text-ink transition-colors duration-300 group-hover:bg-white/15 group-hover:text-white">
-                                <Star className="h-3.5 w-3.5 fill-gold text-gold" />
+                            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-1 text-xs font-bold text-text">
+                                <Star className="h-3.5 w-3.5 fill-primary text-primary" />
                                 {Number(product.rating).toFixed(1)}
                             </span>
                         ) : null}
                     </div>
 
-                    <p className="mt-1.5 line-clamp-2 min-h-10 flex-1 text-sm leading-5 text-ink-soft transition-colors duration-300 group-hover:text-white/80">
+                    <p className="mt-1.5 line-clamp-2 min-h-10 flex-1 text-sm leading-5 text-text-muted">
                         {t(product.description)}
                     </p>
 
-                    <div className="mt-5 flex items-end justify-between gap-3 border-t border-gold/30 pt-4 transition-colors duration-300 group-hover:border-gold/60">
+                    <div className="mt-5 flex items-end justify-between gap-3 border-t border-line pt-4">
                         <div className="min-w-0">
                             <Price
                                 value={displayPrice}
                                 from={hasSizes}
-                                className="text-2xl font-extrabold leading-none text-ink transition-colors duration-300 group-hover:text-white"
+                                className="text-2xl font-extrabold leading-none text-primary"
                             />
                             {hasOldPrice && (
                                 <span className="mt-2 flex items-center gap-2">
                                     <Price
                                         value={product.oldPrice}
-                                        className="text-xs font-semibold text-ink-soft/60 line-through transition-colors duration-300 group-hover:text-white/60"
+                                        className="text-xs font-semibold text-text-muted/60 line-through"
                                     />
                                     <span
                                         dir="ltr"
-                                        className="rounded-full bg-gold/25 px-1.5 py-0.5 text-[11px] font-bold text-ink transition-colors duration-300 group-hover:bg-gold group-hover:text-ink"
+                                        className="rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-bold text-text-dark"
                                     >
                                         -{discount}%
                                     </span>
@@ -166,12 +145,11 @@ export default function BestSellerCard({ product, rank, className }) {
                             )}
                         </div>
 
-                        {/* زر الطلب الأساسي: ذهبي في الوضعين، واضح حتى على الكارت الأحمر */}
                         <button
                             type="button"
                             onClick={handleQuickAdd}
                             aria-label={isAr ? "أضف للسلة" : "Add to cart"}
-                            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-gold px-5 text-sm font-extrabold text-ink shadow-md transition duration-300 hover:scale-105 hover:brightness-95 active:scale-95"
+                            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-extrabold text-text-dark shadow-md transition duration-300 hover:scale-105 hover:brightness-110 active:scale-95"
                         >
                             <Plus className="h-4 w-4" strokeWidth={3} />
                             {isAr ? "أضف" : "Add"}

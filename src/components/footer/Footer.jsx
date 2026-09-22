@@ -27,10 +27,10 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="mt-16 bg-ink text-cream-100">
+    <footer className="mt-16 bg-ink-deep text-text-soft">
       <div className="peak-divider -translate-y-full">
         <svg viewBox="0 0 1200 34" preserveAspectRatio="none">
-          <polygon points="0,34 0,20 100,4 220,24 340,8 460,26 600,2 740,22 860,10 1000,28 1120,6 1200,20 1200,34" fill="#1A1512" />
+          <polygon points="0,34 0,20 100,4 220,24 340,8 460,26 600,2 740,22 860,10 1000,28 1120,6 1200,20 1200,34" fill="#050505" />
         </svg>
       </div>
 
@@ -41,12 +41,12 @@ export default function Footer() {
               <img src={logo} alt="Peak Burger" className="h-11 w-11 rounded-full object-cover" />
               <span className="font-display text-lg font-extrabold text-white">Peak Burger</span>
             </div>
-            <p className="max-w-xs text-sm text-cream-100/60">{lang === "ar" ? "فريش. سخن. لا يُنسى." : "Fresh. Hot. Unforgettable."}</p>
+            <p className="max-w-xs text-sm text-text-muted">{lang === "ar" ? "فريش. سخن. لا يُنسى." : "Fresh. Hot. Unforgettable."}</p>
             <div className="mt-4 flex gap-2">
-              <a href="#" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-ink">
+              <a href="#" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-text-dark">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-ink">
+              <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-primary hover:text-text-dark">
                 <Instagram className="h-4 w-4" />
               </a>
             </div>
@@ -58,7 +58,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 {col.links.map((link) => (
                   <li key={link.to}>
-                    <Link to={link.to} className="text-sm text-cream-100/70 hover:text-primary">
+                    <Link to={link.to} className="text-sm text-text-muted hover:text-primary">
                       {t(link.label)}
                     </Link>
                   </li>
@@ -69,7 +69,7 @@ export default function Footer() {
 
           <div>
             <h4 className="mb-3 font-display font-bold text-white">{lang === "ar" ? "تواصل معنا" : "Contact"}</h4>
-            <ul className="space-y-3 text-sm text-cream-100/70">
+            <ul className="space-y-3 text-sm text-text-muted">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 {lang === "ar" ? "السويس، مصر" : "Suez, Egypt"}
@@ -86,7 +86,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-cream-100/50">
+        <div className="mt-10 border-t border-line pt-6 text-center text-xs text-text-muted">
           <div class="en !text-right">
             <span class="">
               <span class="">&lt;</span>

@@ -88,15 +88,15 @@ export default function AdminProductSizes() {
   };
 
   const columns = [
-    { key: "product", header: lang === "ar" ? "المنتج" : "Product", render: (r) => <span className="font-semibold text-ink">{t(r.productName) || `#${r.productId}`}</span> },
+    { key: "product", header: lang === "ar" ? "المنتج" : "Product", render: (r) => <span className="font-semibold text-text">{t(r.productName) || `#${r.productId}`}</span> },
     { key: "sizeKey", header: lang === "ar" ? "المفتاح" : "Key", render: (r) => r.sizeKey },
     { key: "label", header: lang === "ar" ? "التسمية" : "Label", render: (r) => (lang === "ar" ? r.label.ar : r.label.en) },
-    { key: "price", header: lang === "ar" ? "السعر" : "Price", render: (r) => <Price value={r.price} className="text-ink" /> },
+    { key: "price", header: lang === "ar" ? "السعر" : "Price", render: (r) => <Price value={r.price} className="text-text" /> },
     {
       key: "actions", header: "", render: (r) => (
         <div className="flex gap-1">
-          <button onClick={() => setEditing(r)} className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100"><Pencil className="h-4 w-4" /></button>
-          <button onClick={() => handleDelete(r)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary-50"><Trash2 className="h-4 w-4" /></button>
+          <button onClick={() => setEditing(r)} className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover"><Pencil className="h-4 w-4" /></button>
+          <button onClick={() => handleDelete(r)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary/15"><Trash2 className="h-4 w-4" /></button>
         </div>
       )
     },
@@ -105,7 +105,7 @@ export default function AdminProductSizes() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "أحجام المنتجات" : "Product Sizes"}</h1>
+        <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "أحجام المنتجات" : "Product Sizes"}</h1>
         <Button variant="primary" onClick={() => setEditing({})}><Plus className="h-4 w-4" />{lang === "ar" ? "إضافة حجم" : "Add size"}</Button>
       </div>
 

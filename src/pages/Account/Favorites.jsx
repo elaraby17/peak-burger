@@ -24,7 +24,7 @@ export default function Favorites() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "المفضلة" : "Favorites"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "المفضلة" : "Favorites"}</h1>
 
       {!ready ? (
         <ProductGridSkeleton count={4} />

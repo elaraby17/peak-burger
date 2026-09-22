@@ -85,18 +85,18 @@ export default function Menu() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-extrabold text-ink">{lang === "ar" ? "المنيو" : "Our Menu"}</h1>
-          <p className="text-sm text-ink-soft">
+          <h1 className="font-display text-3xl font-extrabold text-text">{lang === "ar" ? "المنيو" : "Our Menu"}</h1>
+          <p className="text-sm text-text-muted">
             {lang === "ar" ? "اختار من أفضل الأصناف عندنا" : "Pick from our full lineup"}
           </p>
         </div>
         <div className="relative w-full sm:w-72">
-          <SearchIcon className="pointer-events-none absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink-soft/50" />
+          <SearchIcon className="pointer-events-none absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-muted/50" />
           <input
             value={query}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder={lang === "ar" ? "دور على أكلة..." : "Search products..."}
-            className="h-11 w-full rounded-full border-2 border-ink/10 bg-white ps-10 pe-4 text-sm text-ink outline-none focus:border-primary"
+            className="h-11 w-full rounded-full border-2 border-line bg-surface-50 ps-10 pe-4 text-sm text-text outline-none focus:border-primary"
           />
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function Menu() {
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         {/* Desktop sidebar */}
         <aside className="hidden lg:block">
-          <div className="sticky top-24 space-y-1 rounded-2xl bg-white p-3 shadow-card">
+          <div className="sticky top-24 space-y-1 rounded-2xl border border-line bg-surface-50 p-3 shadow-card">
             <CategoryCard
               variant="sidebar"
               category={{ name: { en: "All Items", ar: "كل الأصناف" }, icon: "flame" }}

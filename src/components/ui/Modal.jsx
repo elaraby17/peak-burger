@@ -20,10 +20,10 @@ export default function Modal({ isOpen, onClose, title, children, size = "md" })
   const sizes = { sm: "max-w-sm", md: "max-w-md", lg: "max-w-2xl" };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 backdrop-blur-sm animate-fadeIn sm:items-center sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink-deep/70 backdrop-blur-sm animate-fadeIn sm:items-center sm:p-4">
       <div
         className={cn(
-          "w-full rounded-t-3xl bg-white p-6 shadow-card-hover animate-slideUp sm:rounded-3xl",
+          "w-full rounded-t-3xl bg-surface-100 p-6 shadow-card-hover ring-1 ring-white/10 animate-slideUp sm:rounded-3xl",
           sizes[size]
         )}
         role="dialog"
@@ -31,11 +31,11 @@ export default function Modal({ isOpen, onClose, title, children, size = "md" })
         aria-label={title}
       >
         <div className="mb-4 flex items-center justify-between">
-          {title && <h3 className="font-display text-xl font-bold text-ink">{title}</h3>}
+          {title && <h3 className="font-display text-xl font-bold text-text">{title}</h3>}
           <button
             onClick={onClose}
             aria-label="Close"
-            className="ms-auto flex h-9 w-9 items-center justify-center rounded-full text-ink-soft hover:bg-ink/5"
+            className="ms-auto flex h-9 w-9 items-center justify-center rounded-full text-text-muted hover:bg-white/5"
           >
             <X className="h-5 w-5" />
           </button>

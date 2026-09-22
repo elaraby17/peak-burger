@@ -52,7 +52,7 @@ function NavItem({ item, onClick }) {
       className={({ isActive }) =>
         cn(
           "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-colors",
-          isActive ? "bg-primary text-ink shadow-pop" : "text-white/70 hover:bg-white/10 hover:text-white"
+          isActive ? "bg-primary text-text-dark shadow-pop" : "text-white/70 hover:bg-white/10 hover:text-white"
         )
       }
     >
@@ -66,7 +66,7 @@ export default function AdminSidebar({ mobileOpen, onClose }) {
   const { lang } = useLanguage();
 
   const content = (
-    <div className="flex h-full flex-col bg-ink px-3 py-5">
+    <div className="flex h-full flex-col bg-ink-deep px-3 py-5">
       <div className="mb-6 flex items-center justify-between px-2">
         <div className="flex items-center gap-2">
           <img src={logo} alt="Peak Burger" className="h-9 w-9 rounded-full object-cover" />
@@ -108,7 +108,7 @@ export default function AdminSidebar({ mobileOpen, onClose }) {
           mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
       >
-        <div className="absolute inset-0 bg-ink/60" onClick={onClose} />
+        <div className="absolute inset-0 bg-ink-deep/60" onClick={onClose} />
         <div
           className={cn(
             "absolute top-0 h-full w-72 transition-transform duration-300",

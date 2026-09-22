@@ -7,14 +7,14 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
       <Link to="/" className="mx-auto mb-6 flex items-center gap-2">
         <img src={logo} alt="Peak Burger" className="h-12 w-12 rounded-full object-cover" />
       </Link>
-      <div className="rounded-3xl bg-white p-6 shadow-card animate-fadeIn sm:p-8">
+      <div className="rounded-3xl border border-line bg-surface-50 p-6 shadow-card animate-fadeIn sm:p-8">
         <div className="mb-6 text-center">
-          <h1 className="font-display text-2xl font-extrabold text-ink">{title}</h1>
-          {subtitle && <p className="mt-1.5 text-sm text-ink-soft">{subtitle}</p>}
+          <h1 className="font-display text-2xl font-extrabold text-text">{title}</h1>
+          {subtitle && <p className="mt-1.5 text-sm text-text-muted">{subtitle}</p>}
         </div>
         {children}
       </div>
-      {footer && <div className="mt-6 text-center text-sm text-ink-soft">{footer}</div>}
+      {footer && <div className="mt-6 text-center text-sm text-text-muted">{footer}</div>}
     </div>
   );
 }

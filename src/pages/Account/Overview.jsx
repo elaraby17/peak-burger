@@ -51,61 +51,61 @@ export default function AccountOverview() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-2xl font-extrabold text-ink">
+        <h1 className="font-display text-2xl font-extrabold text-text">
           {lang === "ar" ? `أهلاً، ${user?.name?.split(" ")[0] ?? ""}` : `Hi, ${user?.name?.split(" ")[0] ?? ""}`}
         </h1>
-        <p className="text-sm text-ink-soft">{lang === "ar" ? "نظرة عامة على حسابك" : "Here's your account at a glance."}</p>
+        <p className="text-sm text-text-muted">{lang === "ar" ? "نظرة عامة على حسابك" : "Here's your account at a glance."}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {stats.map((stat) => (
-          <div key={stat.label.en} className="rounded-2xl bg-white p-5 shadow-card">
+          <div key={stat.label.en} className="rounded-2xl border border-line bg-surface-50 p-5 shadow-card">
             <stat.icon className="h-5 w-5 text-secondary" />
-            <p className="mt-3 font-display text-2xl font-extrabold text-ink">{stat.value}</p>
-            <p className="text-xs font-medium text-ink-soft">{t(stat.label)}</p>
+            <p className="mt-3 font-display text-2xl font-extrabold text-text">{stat.value}</p>
+            <p className="text-xs font-medium text-text-muted">{t(stat.label)}</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Link to="/menu" className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-card hover:shadow-card-hover">
+        <Link to="/menu" className="flex items-center gap-3 rounded-2xl border border-line bg-surface-50 p-4 shadow-card hover:shadow-card-hover">
           <RotateCcw className="h-5 w-5 text-secondary" />
-          <span className="text-sm font-semibold text-ink">{lang === "ar" ? "اطلب تاني" : "Order Again"}</span>
+          <span className="text-sm font-semibold text-text">{lang === "ar" ? "اطلب تاني" : "Order Again"}</span>
         </Link>
-        <Link to="/account/orders" className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-card hover:shadow-card-hover">
+        <Link to="/account/orders" className="flex items-center gap-3 rounded-2xl border border-line bg-surface-50 p-4 shadow-card hover:shadow-card-hover">
           <ListOrdered className="h-5 w-5 text-secondary" />
-          <span className="text-sm font-semibold text-ink">{lang === "ar" ? "طلباتي" : "View Orders"}</span>
+          <span className="text-sm font-semibold text-text">{lang === "ar" ? "طلباتي" : "View Orders"}</span>
         </Link>
-        <Link to="/account/profile" className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-card hover:shadow-card-hover">
+        <Link to="/account/profile" className="flex items-center gap-3 rounded-2xl border border-line bg-surface-50 p-4 shadow-card hover:shadow-card-hover">
           <UserCog className="h-5 w-5 text-secondary" />
-          <span className="text-sm font-semibold text-ink">{lang === "ar" ? "تعديل الملف الشخصي" : "Edit Profile"}</span>
+          <span className="text-sm font-semibold text-text">{lang === "ar" ? "تعديل الملف الشخصي" : "Edit Profile"}</span>
         </Link>
       </div>
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-display text-lg font-bold text-ink">{lang === "ar" ? "أحدث الطلبات" : "Recent Orders"}</h2>
+          <h2 className="font-display text-lg font-bold text-text">{lang === "ar" ? "أحدث الطلبات" : "Recent Orders"}</h2>
           <Link to="/account/orders" className="text-sm font-semibold text-secondary hover:underline">
             {lang === "ar" ? "عرض الكل" : "View all"}
           </Link>
         </div>
 
         {recentOrders.length === 0 ? (
-          <p className="rounded-2xl bg-white p-6 text-center text-sm text-ink-soft shadow-card">
+          <p className="rounded-2xl border border-line bg-surface-50 p-6 text-center text-sm text-text-muted shadow-card">
             {lang === "ar" ? "لسه معملتش أي طلب" : "You haven't placed any orders yet."}
           </p>
         ) : (
           <div className="space-y-3">
             {recentOrders.map((order) => (
-              <div key={order.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-card">
+              <div key={order.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-surface-50 p-4 shadow-card">
                 <div>
-                  <Link to={`/account/orders/${order.id}`} className="font-display font-bold text-ink hover:text-secondary">
+                  <Link to={`/account/orders/${order.id}`} className="font-display font-bold text-text hover:text-secondary">
                     {order.id}
                   </Link>
-                  <p className="text-xs text-ink-soft">{formatDate(order.date, { lang })}</p>
+                  <p className="text-xs text-text-muted">{formatDate(order.date, { lang })}</p>
                 </div>
                 <Badge tone={statusTone[order.status]}>{t(statusLabels[order.status])}</Badge>
-                <Price value={order.total} className="text-ink" />
+                <Price value={order.total} className="text-text" />
                 <button
                   onClick={() => reorder(order)}
                   className="text-sm font-semibold text-secondary hover:underline"

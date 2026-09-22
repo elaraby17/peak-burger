@@ -10,16 +10,16 @@ import { confirmDialog, toastSuccess } from "../../utils/alerts";
 function Toggle({ checked, onChange, label }) {
   return (
     <label className="flex cursor-pointer items-center justify-between py-3">
-      <span className="text-sm font-medium text-ink">{label}</span>
+      <span className="text-sm font-medium text-text">{label}</span>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative h-6 w-12 rounded-full transition-colors ${checked ? "bg-secondary" : "bg-ink/15"}`}
+        className={`relative h-6 w-12 rounded-full transition-colors ${checked ? "bg-secondary" : "bg-white/20"}`}
       >
         <span
-          className={`absolute left-0 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+          className={`absolute left-0 top-0.5 h-5 w-5 rounded-full bg-surface-50 shadow transition-transform ${
             checked ? "translate-x-[1.6em] rtl:translate-x-[1.6em]" : "translate-x-0.5"
           }`}
         />
@@ -66,13 +66,13 @@ export default function Settings() {
 
   return (
     <div className="max-w-xl space-y-6">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "الإعدادات" : "Settings"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "الإعدادات" : "Settings"}</h1>
 
-      <section className="rounded-2xl bg-white p-6 shadow-card">
-        <h2 className="mb-1 flex items-center gap-2 font-display font-bold text-ink">
+      <section className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+        <h2 className="mb-1 flex items-center gap-2 font-display font-bold text-text">
           <Bell className="h-4.5 w-4.5 text-secondary" /> {lang === "ar" ? "الإشعارات" : "Notifications"}
         </h2>
-        <div className="divide-y divide-ink/5">
+        <div className="divide-y divide-white/10">
           <Toggle
             checked={notifications.orderUpdates}
             onChange={(v) => setNotifications((n) => ({ ...n, orderUpdates: v }))}
@@ -86,20 +86,20 @@ export default function Settings() {
         </div>
       </section>
 
-      <section className="rounded-2xl bg-white p-6 shadow-card">
-        <h2 className="mb-1 flex items-center gap-2 font-display font-bold text-ink">
+      <section className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+        <h2 className="mb-1 flex items-center gap-2 font-display font-bold text-text">
           <Globe className="h-4.5 w-4.5 text-secondary" /> {lang === "ar" ? "التفضيلات" : "Preferences"}
         </h2>
         <div className="flex items-center justify-between py-3">
-          <span className="text-sm font-medium text-ink">{lang === "ar" ? "لغة الموقع" : "Language"}</span>
+          <span className="text-sm font-medium text-text">{lang === "ar" ? "لغة الموقع" : "Language"}</span>
           <Button variant="outline" size="sm" onClick={toggleLang}>
             {lang === "en" ? "العربية" : "English"}
           </Button>
         </div>
       </section>
 
-      <section className="rounded-2xl bg-white p-6 shadow-card">
-        <h2 className="mb-3 flex items-center gap-2 font-display font-bold text-ink">
+      <section className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+        <h2 className="mb-3 flex items-center gap-2 font-display font-bold text-text">
           <Lock className="h-4.5 w-4.5 text-secondary" /> {lang === "ar" ? "تغيير كلمة المرور" : "Change Password"}
         </h2>
         <form onSubmit={handlePasswordChange} className="space-y-3">

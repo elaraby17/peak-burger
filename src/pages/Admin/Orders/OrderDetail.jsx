@@ -61,11 +61,11 @@ export default function AdminOrderDetail() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link to="/admin/orders" className="text-sm font-semibold text-ink-soft hover:text-secondary">
+          <Link to="/admin/orders" className="text-sm font-semibold text-text-muted hover:text-secondary">
             {lang === "ar" ? "← كل الطلبات" : "← All orders"}
           </Link>
-          <h1 className="mt-1 font-display text-2xl font-extrabold text-ink">{order.id}</h1>
-          <p className="text-sm text-ink-soft">{formatDate(order.date, { lang })}</p>
+          <h1 className="mt-1 font-display text-2xl font-extrabold text-text">{order.id}</h1>
+          <p className="text-sm text-text-muted">{formatDate(order.date, { lang })}</p>
         </div>
         <StatusBadge status={order.status} label={t(statusLabels[order.status])} />
       </div>
@@ -74,55 +74,55 @@ export default function AdminOrderDetail() {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-3">
-          <h2 className="font-display text-lg font-bold text-ink">{lang === "ar" ? "المنتجات" : "Items"}</h2>
+          <h2 className="font-display text-lg font-bold text-text">{lang === "ar" ? "المنتجات" : "Items"}</h2>
           {order.items?.map((item) => (
-            <div key={item.lineId} className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
+            <div key={item.lineId} className="flex items-center gap-4 rounded-2xl border border-line bg-surface-50 p-4 shadow-card">
               <img src={item.image} alt="" className="h-16 w-16 rounded-xl object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
               <div className="flex-1">
-                <p className="font-semibold text-ink">{t(item.name)}</p>
-                <p className="text-xs text-ink-soft">
+                <p className="font-semibold text-text">{t(item.name)}</p>
+                <p className="text-xs text-text-muted">
                   {item.size && `${t(item.size.label)} · `}
                   {item.sauce && `${item.sauce} · `}
                   {lang === "ar" ? `الكمية: ${item.quantity}` : `Qty: ${item.quantity}`}
                 </p>
               </div>
-              <Price value={item.unitPrice * item.quantity} className="text-ink" />
+              <Price value={item.unitPrice * item.quantity} className="text-text" />
             </div>
           ))}
         </div>
 
-        <div className="h-fit space-y-5 rounded-2xl bg-white p-6 shadow-card">
+        <div className="h-fit space-y-5 rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
           <div>
-            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-ink">
+            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-text">
               <User className="h-4 w-4 text-secondary" /> {lang === "ar" ? "بيانات العميل" : "Customer"}
             </h3>
-            <p className="text-sm text-ink-soft">{order.customer?.fullName}</p>
-            <p className="text-sm text-ink-soft">{order.customer?.phone}</p>
-            <p className="text-sm text-ink-soft">{order.customer?.email}</p>
+            <p className="text-sm text-text-muted">{order.customer?.fullName}</p>
+            <p className="text-sm text-text-muted">{order.customer?.phone}</p>
+            <p className="text-sm text-text-muted">{order.customer?.email}</p>
           </div>
           <div>
-            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-ink">
+            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-text">
               <MapPin className="h-4 w-4 text-secondary" /> {lang === "ar" ? "عنوان التوصيل" : "Delivery address"}
             </h3>
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-text-muted">
               {order.address?.governorate}, {order.address?.area}<br />
               {order.address?.address}
             </p>
           </div>
           <div>
-            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-ink">
+            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-text">
               <CreditCard className="h-4 w-4 text-secondary" /> {lang === "ar" ? "طريقة الدفع" : "Payment"}
             </h3>
-            <p className="text-sm text-ink-soft">{order.payment}</p>
+            <p className="text-sm text-text-muted">{order.payment}</p>
           </div>
-          <div className="border-t border-ink/10 pt-4 text-sm">
-            <div className="flex justify-between text-ink-soft"><span>{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span><Price value={order.subtotal} className="text-ink" /></div>
-            <div className="mt-1 flex justify-between text-ink-soft"><span>{lang === "ar" ? "التوصيل" : "Delivery"}</span><Price value={order.deliveryFee} className="text-ink" /></div>
-            <div className="mt-2 flex justify-between border-t border-ink/10 pt-2 font-display font-bold text-ink"><span>{lang === "ar" ? "الإجمالي" : "Total"}</span><Price value={order.total} /></div>
+          <div className="border-t border-line pt-4 text-sm">
+            <div className="flex justify-between text-text-muted"><span>{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span><Price value={order.subtotal} className="text-text" /></div>
+            <div className="mt-1 flex justify-between text-text-muted"><span>{lang === "ar" ? "التوصيل" : "Delivery"}</span><Price value={order.deliveryFee} className="text-text" /></div>
+            <div className="mt-2 flex justify-between border-t border-line pt-2 font-display font-bold text-text"><span>{lang === "ar" ? "الإجمالي" : "Total"}</span><Price value={order.total} /></div>
           </div>
 
-          <div className="border-t border-ink/10 pt-4">
-            <p className="mb-2 text-sm font-bold text-ink">{lang === "ar" ? "تحديث الحالة" : "Update status"}</p>
+          <div className="border-t border-line pt-4">
+            <p className="mb-2 text-sm font-bold text-text">{lang === "ar" ? "تحديث الحالة" : "Update status"}</p>
             <Select value={nextStatus} onChange={(e) => setNextStatus(e.target.value)}>
               {ORDER_STATUSES.map((s) => (
                 <option key={s.id} value={s.id}>{t(statusLabels[s.id])}</option>

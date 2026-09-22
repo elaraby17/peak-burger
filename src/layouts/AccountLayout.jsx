@@ -25,8 +25,8 @@ export default function AccountLayout() {
               end={link.end}
               className={({ isActive }) =>
                 cn(
-                  "flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-ink-soft transition-colors lg:shrink",
-                  isActive ? "bg-secondary text-white shadow-pop" : "bg-white hover:bg-cream-100"
+                  "flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-text-muted transition-colors lg:shrink",
+                  isActive ? "bg-secondary text-white shadow-pop" : "bg-surface-50 hover:bg-surface-hover"
                 )
               }
             >

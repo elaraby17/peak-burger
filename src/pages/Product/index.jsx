@@ -68,7 +68,7 @@ export default function ProductDetails() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link to="/menu" className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-secondary">
+      <Link to="/menu" className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-text-muted hover:text-secondary">
         <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
         {lang === "ar" ? "الرجوع للمنيو" : "Back to menu"}
       </Link>
@@ -81,15 +81,15 @@ export default function ProductDetails() {
             className="aspect-square w-full rounded-3xl object-cover shadow-card"
             onError={(e) => {
               e.currentTarget.src =
-                "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500' viewBox='0 0 500 500'%3E%3Crect width='500' height='500' fill='%23FCEACB'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='22' fill='%23B37F00' text-anchor='middle' dy='.3em'%3EPeak Burger%3C/text%3E%3C/svg%3E";
+                "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500' viewBox='0 0 500 500'%3E%3Crect width='500' height='500' fill='%23181818'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='22' fill='%23F5B400' text-anchor='middle' dy='.3em'%3EPeak Burger%3C/text%3E%3C/svg%3E";
             }}
           />
           <button
             onClick={() => toggleFavorite(product.id)}
             aria-pressed={favorite}
-            className="absolute end-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-card backdrop-blur"
+            className="absolute end-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-surface-raised/90 shadow-card backdrop-blur"
           >
-            <Heart className={cn("h-5 w-5", favorite ? "fill-secondary text-secondary" : "text-ink-soft")} />
+            <Heart className={cn("h-5 w-5", favorite ? "fill-secondary text-secondary" : "text-text-muted")} />
           </button>
           {product.isNew && (
             <Badge tone="secondary" className="absolute start-4 top-4">
@@ -99,17 +99,17 @@ export default function ProductDetails() {
         </div>
 
         <div>
-          <h1 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">{t(product.name)}</h1>
-          <p className="mt-3 text-ink-soft">{t(product.description)}</p>
+          <h1 className="font-display text-3xl font-extrabold text-text sm:text-4xl">{t(product.name)}</h1>
+          <p className="mt-3 text-text-muted">{t(product.description)}</p>
 
           {product.ingredients?.[lang]?.length > 0 && (
             <div className="mt-5">
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink-soft">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-text-muted">
                 {lang === "ar" ? "المكونات" : "Ingredients"}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {product.ingredients[lang].map((ing) => (
-                  <span key={ing} className="rounded-full bg-cream-100 px-3 py-1 text-xs font-medium text-ink-soft">
+                  <span key={ing} className="rounded-full bg-surface-50 px-3 py-1 text-xs font-medium text-text-muted">
                     {ing}
                   </span>
                 ))}
@@ -119,7 +119,7 @@ export default function ProductDetails() {
 
           {product.sizes && (
             <div className="mt-6">
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink-soft">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-text-muted">
                 {lang === "ar" ? "الحجم" : "Size"}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -131,7 +131,7 @@ export default function ProductDetails() {
                       "rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors",
                       selectedSize?.id === size.id
                         ? "border-secondary bg-secondary text-white"
-                        : "border-ink/10 bg-white text-ink-soft"
+                        : "border-line bg-surface-50 text-text-muted"
                     )}
                   >
                     {t(size.label)} · <Price value={size.price} className="text-inherit" />
@@ -143,7 +143,7 @@ export default function ProductDetails() {
 
           {product.sauceOptions && (
             <div className="mt-6">
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink-soft">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-text-muted">
                 {lang === "ar" ? "اختر الصوص" : "Choose your sauce"}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -155,7 +155,7 @@ export default function ProductDetails() {
                       "rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors",
                       selectedSauce === sauceId
                         ? "border-secondary bg-secondary text-white"
-                        : "border-ink/10 bg-white text-ink-soft"
+                        : "border-line bg-surface-50 text-text-muted"
                     )}
                   >
                     {t(sauceLabels[sauceId])}
@@ -171,7 +171,7 @@ export default function ProductDetails() {
               onIncrease={() => setQuantity((q) => q + 1)}
               onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
             />
-            <Price value={unitPrice !== null ? unitPrice * quantity : null} className="text-2xl" />
+            <Price value={unitPrice !== null ? unitPrice * quantity : null} className="text-2xl text-primary" />
           </div>
 
           <Button

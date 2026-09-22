@@ -4,7 +4,6 @@ import Hero from "./Hero";
 import PopularProducts from "./PopularProducts";
 import Categories from "./Categories";
 import SpecialOffers from "./SpecialOffers";
-import FeaturedBurger from "./FeaturedBurger";
 import WhyPeakBurger from "./WhyPeakBurger";
 import Reviews from "./Reviews";
 import CTA from "./CTA";
@@ -28,7 +27,6 @@ export default function Home() {
       <PopularProducts />
       <Categories />
       <SpecialOffers />
-      <FeaturedBurger />
       <WhyPeakBurger />
       <Reviews />
       <CTA />

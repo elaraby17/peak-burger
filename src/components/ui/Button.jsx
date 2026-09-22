@@ -4,10 +4,10 @@ import { cn } from "../../utils/cn";
 
 const variants = {
   primary: "bg-secondary text-white hover:bg-secondary-600 shadow-pop active:scale-[0.98]",
-  gold: "bg-primary text-ink hover:bg-primary-600 shadow-pop active:scale-[0.98]",
-  outline: "border-2 border-ink text-ink hover:bg-ink hover:text-white",
-  ghost: "text-ink hover:bg-ink/5",
-  white: "bg-white text-ink hover:bg-cream-100 shadow-card",
+  gold: "bg-primary text-text-dark hover:bg-primary-600 shadow-pop active:scale-[0.98]",
+  outline: "border-2 border-white/20 text-text hover:bg-white hover:text-text-dark",
+  ghost: "text-text hover:bg-white/5",
+  white: "bg-surface-100 text-text hover:bg-surface-200 shadow-card",
   danger: "bg-secondary-700 text-white hover:bg-secondary-800",
 };
 

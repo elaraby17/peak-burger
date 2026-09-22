@@ -38,7 +38,7 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "الإعدادات" : "Settings"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "الإعدادات" : "Settings"}</h1>
 
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
         <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
@@ -47,7 +47,7 @@ export default function AdminSettings() {
               key={s.key}
               onClick={() => setActive(s.key)}
               className={`shrink-0 rounded-xl px-4 py-2.5 text-start text-sm font-semibold ${
-                active === s.key ? "bg-secondary text-white shadow-pop" : "bg-white text-ink-soft hover:bg-cream-100"
+                active === s.key ? "bg-secondary text-white shadow-pop" : "bg-surface-50 text-text-muted hover:bg-surface-hover"
               }`}
             >
               {lang === "ar" ? s.ar : s.en}
@@ -55,7 +55,7 @@ export default function AdminSettings() {
           ))}
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
           {active === "restaurant" && (
             <form onSubmit={handleSave} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -75,13 +75,13 @@ export default function AdminSettings() {
 
           {active === "language" && (
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-ink">{lang === "ar" ? "لغة لوحة التحكم" : "Dashboard language"}</p>
+              <p className="text-sm font-semibold text-text">{lang === "ar" ? "لغة لوحة التحكم" : "Dashboard language"}</p>
               <Button variant="outline" onClick={toggleLang}>{lang === "en" ? "العربية" : "English"}</Button>
             </div>
           )}
 
           {!["restaurant", "language"].includes(active) && (
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-text-muted">
               {lang === "ar" ? "قريبًا - هيتم ربط هذا القسم بالباك إند لاحقًا." : "Coming soon - this section will be wired up once the backend is ready."}
             </p>
           )}

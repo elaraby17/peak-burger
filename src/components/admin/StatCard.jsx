@@ -2,12 +2,12 @@ import { cn } from "../../utils/cn";
 
 export default function StatCard({ icon: Icon, label, value, trend, tone = "primary" }) {
   const tones = {
-    primary: "bg-primary-100 text-secondary",
-    secondary: "bg-secondary-50 text-secondary",
-    ink: "bg-ink text-primary",
+    primary: "bg-surface-100 text-primary",
+    secondary: "bg-secondary/15 text-secondary",
+    ink: "bg-ink-deep text-primary",
   };
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-card">
+    <div className="rounded-2xl border border-line bg-surface-50 p-5 shadow-card">
       <div className="flex items-center justify-between">
         <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl", tones[tone])}>
           <Icon className="h-5 w-5" />
@@ -18,8 +18,8 @@ export default function StatCard({ icon: Icon, label, value, trend, tone = "prim
           </span>
         )}
       </div>
-      <p className="mt-3 font-display text-2xl font-extrabold text-ink">{value}</p>
-      <p className="text-xs font-medium text-ink-soft">{label}</p>
+      <p className="mt-3 font-display text-2xl font-extrabold text-text">{value}</p>
+      <p className="text-xs font-medium text-text-muted">{label}</p>
     </div>
   );
 }

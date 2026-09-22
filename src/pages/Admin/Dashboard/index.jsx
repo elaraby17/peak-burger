@@ -61,10 +61,10 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-extrabold text-ink">
+        <h1 className="font-display text-2xl font-extrabold text-text">
           {lang === "ar" ? `أهلاً بيك، ${admin?.name?.split(" ")[0] ?? "Admin"} 👋` : `Welcome back, ${admin?.name?.split(" ")[0] ?? "Admin"} 👋`}
         </h1>
-        <p className="text-sm text-ink-soft">
+        <p className="text-sm text-text-muted">
           {lang === "ar" ? "نظرة عامة على بيك برجر النهاردة" : "Peak Burger overview for today."}
         </p>
       </div>
@@ -77,14 +77,14 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-lg font-bold text-ink">{lang === "ar" ? "التحليلات" : "Analytics"}</h2>
-        <div className="flex gap-1 rounded-full bg-white p-1 shadow-card">
+        <h2 className="font-display text-lg font-bold text-text">{lang === "ar" ? "التحليلات" : "Analytics"}</h2>
+        <div className="flex gap-1 rounded-full bg-surface-50 p-1 shadow-card">
           {RANGES.map((r) => (
             <button
               key={r.key}
               onClick={() => setRange(r.key)}
               className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
-                range === r.key ? "bg-secondary text-white" : "text-ink-soft"
+                range === r.key ? "bg-secondary text-white" : "text-text-muted"
               }`}
             >
               {lang === "ar" ? r.labelAr : r.labelEn}
@@ -94,8 +94,8 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl bg-white p-5 shadow-card">
-          <p className="mb-3 text-sm font-bold text-ink">{lang === "ar" ? "الإيرادات" : "Revenue overview"}</p>
+        <div className="rounded-2xl border border-line bg-surface-50 p-5 shadow-card">
+          <p className="mb-3 text-sm font-bold text-text">{lang === "ar" ? "الإيرادات" : "Revenue overview"}</p>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={series}>
               <defs>
@@ -104,22 +104,22 @@ export default function AdminDashboard() {
                   <stop offset="95%" stopColor="#D71920" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1A151215" />
-              <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={40} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+              <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#B9AFA1" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#B9AFA1" }} axisLine={false} tickLine={false} width={40} />
               <Tooltip />
               <Area type="monotone" dataKey="revenue" stroke="#D71920" fill="url(#rev)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 shadow-card">
-          <p className="mb-3 text-sm font-bold text-ink">{lang === "ar" ? "الطلبات" : "Orders overview"}</p>
+        <div className="rounded-2xl border border-line bg-surface-50 p-5 shadow-card">
+          <p className="mb-3 text-sm font-bold text-text">{lang === "ar" ? "الطلبات" : "Orders overview"}</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={series}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1A151215" />
-              <XAxis dataKey="label" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={30} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+              <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#B9AFA1" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#B9AFA1" }} axisLine={false} tickLine={false} width={30} />
               <Tooltip />
               <Bar dataKey="orders" fill="#F5B400" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -129,15 +129,15 @@ export default function AdminDashboard() {
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-display text-lg font-bold text-ink">{lang === "ar" ? "أحدث الطلبات" : "Recent Orders"}</h2>
+          <h2 className="font-display text-lg font-bold text-text">{lang === "ar" ? "أحدث الطلبات" : "Recent Orders"}</h2>
           <Link to="/admin/orders" className="text-sm font-semibold text-secondary hover:underline">
             {lang === "ar" ? "عرض الكل" : "View all"}
           </Link>
         </div>
-        <div className="overflow-x-auto rounded-2xl bg-white shadow-card">
+        <div className="overflow-x-auto rounded-2xl border border-line bg-surface-50 shadow-card">
           <table className="w-full min-w-[720px] text-sm">
             <thead>
-              <tr className="border-b border-ink/10 text-xs font-bold uppercase tracking-wide text-ink-soft">
+              <tr className="border-b border-line text-xs font-bold uppercase tracking-wide text-text-muted">
                 <th className="px-4 py-3 text-start">{lang === "ar" ? "رقم الطلب" : "Order #"}</th>
                 <th className="px-4 py-3 text-start">{lang === "ar" ? "العميل" : "Customer"}</th>
                 <th className="px-4 py-3 text-start">{lang === "ar" ? "الأصناف" : "Items"}</th>
@@ -146,18 +146,18 @@ export default function AdminDashboard() {
                 <th className="px-4 py-3 text-start">{lang === "ar" ? "الحالة" : "Status"}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-ink/5">
+            <tbody className="divide-y divide-white/10">
               {recentOrders.map((o) => (
-                <tr key={o.id} className="hover:bg-cream-100/60">
+                <tr key={o.id} className="hover:bg-surface-hover">
                   <td className="px-4 py-3">
-                    <Link to={`/admin/orders/${o.id}`} className="font-display font-bold text-ink hover:text-secondary">
+                    <Link to={`/admin/orders/${o.id}`} className="font-display font-bold text-text hover:text-secondary">
                       {o.id}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-ink">{o.customer?.fullName}</td>
-                  <td className="px-4 py-3 text-ink-soft">{o.items?.length ?? 0} {lang === "ar" ? "صنف" : "items"}</td>
-                  <td className="px-4 py-3"><Price value={o.total} className="text-ink" /></td>
-                  <td className="px-4 py-3 text-ink-soft">{o.payment}</td>
+                  <td className="px-4 py-3 text-text">{o.customer?.fullName}</td>
+                  <td className="px-4 py-3 text-text-muted">{o.items?.length ?? 0} {lang === "ar" ? "صنف" : "items"}</td>
+                  <td className="px-4 py-3"><Price value={o.total} className="text-text" /></td>
+                  <td className="px-4 py-3 text-text-muted">{o.payment}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={o.status} label={t(statusLabels[o.status])} />
                   </td>

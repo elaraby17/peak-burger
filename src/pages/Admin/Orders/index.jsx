@@ -53,17 +53,17 @@ export default function AdminOrders() {
 
   const columns = [
     { key: "id", header: lang === "ar" ? "رقم الطلب" : "Order #", render: (o) => (
-      <Link to={`/admin/orders/${o.id}`} className="font-display font-bold text-ink hover:text-secondary">{o.id}</Link>
+      <Link to={`/admin/orders/${o.id}`} className="font-display font-bold text-text hover:text-secondary">{o.id}</Link>
     ) },
     { key: "customer", header: lang === "ar" ? "العميل" : "Customer", render: (o) => o.customer?.fullName },
     { key: "items", header: lang === "ar" ? "الأصناف" : "Items", render: (o) => `${o.items?.length ?? 0} ${lang === "ar" ? "صنف" : "items"}` },
     { key: "branch", header: lang === "ar" ? "الفرع" : "Branch", render: (o) => branchName(o.branchId) },
-    { key: "total", header: lang === "ar" ? "الإجمالي" : "Total", render: (o) => <Price value={o.total} className="text-ink" /> },
+    { key: "total", header: lang === "ar" ? "الإجمالي" : "Total", render: (o) => <Price value={o.total} className="text-text" /> },
     { key: "payment", header: lang === "ar" ? "الدفع" : "Payment" },
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (o) => <StatusBadge status={o.status} label={t(statusLabels[o.status])} /> },
     { key: "date", header: lang === "ar" ? "التاريخ" : "Date", render: (o) => formatDate(o.date, { lang }) },
     { key: "actions", header: "", render: (o) => (
-      <Link to={`/admin/orders/${o.id}`} className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100">
+      <Link to={`/admin/orders/${o.id}`} className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover">
         <Eye className="h-4 w-4" />
       </Link>
     ) },
@@ -71,7 +71,7 @@ export default function AdminOrders() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "الطلبات" : "Orders"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "الطلبات" : "Orders"}</h1>
 
       <FilterBar
         search={search}

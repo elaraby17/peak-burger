@@ -29,12 +29,12 @@ export default function AdminPayments() {
   };
 
   const columns = [
-    { key: "id", header: lang === "ar" ? "رقم العملية" : "Transaction ID", render: (p) => <span className="font-display font-bold text-ink">{p.id}</span> },
+    { key: "id", header: lang === "ar" ? "رقم العملية" : "Transaction ID", render: (p) => <span className="font-display font-bold text-text">{p.id}</span> },
     { key: "order", header: lang === "ar" ? "رقم الطلب" : "Order #", render: (p) => p.orderId },
     { key: "customer", header: lang === "ar" ? "العميل" : "Customer", render: (p) => p.customerName },
     { key: "method", header: lang === "ar" ? "طريقة الدفع" : "Method", render: (p) => p.method },
     { key: "provider", header: lang === "ar" ? "المزوّد" : "Provider", render: (p) => p.provider },
-    { key: "amount", header: lang === "ar" ? "المبلغ" : "Amount", render: (p) => <Price value={p.amount} className="text-ink" /> },
+    { key: "amount", header: lang === "ar" ? "المبلغ" : "Amount", render: (p) => <Price value={p.amount} className="text-text" /> },
     { key: "date", header: lang === "ar" ? "التاريخ" : "Date", render: (p) => formatDate(p.date, { lang }) },
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (p) => (
       <div className="flex items-center gap-2">
@@ -48,7 +48,7 @@ export default function AdminPayments() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "المدفوعات" : "Payments"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "المدفوعات" : "Payments"}</h1>
       <DataTable columns={columns} rows={payments} emptyTitle={lang === "ar" ? "مفيش مدفوعات" : "No payments"} />
     </div>
   );

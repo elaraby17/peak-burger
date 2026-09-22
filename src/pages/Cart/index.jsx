@@ -45,31 +45,31 @@ export default function Cart() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="mb-6 font-display text-3xl font-extrabold text-ink">{lang === "ar" ? "سلة الطلبات" : "Your Cart"}</h1>
+      <h1 className="mb-6 font-display text-3xl font-extrabold text-text">{lang === "ar" ? "سلة الطلبات" : "Your Cart"}</h1>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.lineId} className="flex gap-4 rounded-2xl bg-white p-4 shadow-card">
+            <div key={item.lineId} className="flex gap-4 rounded-2xl border border-line bg-surface-50 p-4 shadow-card">
               <img
                 src={item.image}
                 alt={t(item.name)}
                 className="h-20 w-20 shrink-0 rounded-xl object-cover"
                 onError={(e) => {
                   e.currentTarget.src =
-                    "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FCEACB'/%3E%3C/svg%3E";
+                    "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23181818'/%3E%3C/svg%3E";
                 }}
               />
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="font-display font-bold text-ink">{t(item.name)}</p>
-                    {item.size && <p className="text-xs text-ink-soft">{t(item.size.label)}</p>}
+                    <p className="font-display font-bold text-text">{t(item.name)}</p>
+                    {item.size && <p className="text-xs text-text-muted">{t(item.size.label)}</p>}
                   </div>
                   <button
                     onClick={() => handleRemove(item)}
                     aria-label="Remove item"
-                    className="text-ink-soft/60 hover:text-secondary"
+                    className="text-text-muted/60 hover:text-secondary"
                   >
                     <Trash2 className="h-4.5 w-4.5" />
                   </button>
@@ -88,31 +88,31 @@ export default function Cart() {
           ))}
         </div>
 
-        <div className="h-fit rounded-2xl bg-white p-6 shadow-card">
-          <h2 className="mb-4 font-display text-lg font-bold text-ink">{lang === "ar" ? "ملخص الطلب" : "Order Summary"}</h2>
+        <div className="h-fit rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
+          <h2 className="mb-4 font-display text-lg font-bold text-text">{lang === "ar" ? "ملخص الطلب" : "Order Summary"}</h2>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-ink-soft">
+            <div className="flex justify-between text-text-muted">
               <span>{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-              <Price value={subtotal} className="text-ink" />
+              <Price value={subtotal} className="text-text" />
             </div>
-            <div className="flex justify-between text-ink-soft">
+            <div className="flex justify-between text-text-muted">
               <span>{lang === "ar" ? "رسوم التوصيل" : "Delivery Fee"}</span>
               {deliveryFee === 0 ? (
                 <span className="font-bold text-secondary">{lang === "ar" ? "مجاني" : "Free"}</span>
               ) : (
-                <Price value={deliveryFee} className="text-ink" />
+                <Price value={deliveryFee} className="text-text" />
               )}
             </div>
             {deliveryFee > 0 && (
-              <p className="text-xs text-ink-soft/70">
+              <p className="text-xs text-text-muted/70">
                 {lang === "ar"
                   ? `اطلب بـ ${freeDeliveryThreshold} أو أكتر عشان توصيل مجاني`
                   : `Order ${freeDeliveryThreshold}+ for free delivery`}
               </p>
             )}
           </div>
-          <div className="my-4 border-t border-ink/10" />
-          <div className="flex justify-between font-display text-lg font-bold text-ink">
+          <div className="my-4 border-t border-line" />
+          <div className="flex justify-between font-display text-lg font-bold text-text">
             <span>{lang === "ar" ? "الإجمالي" : "Total"}</span>
             <Price value={total} />
           </div>
@@ -120,7 +120,7 @@ export default function Cart() {
             {lang === "ar" ? "استكمال الطلب" : "Checkout"}
             <ArrowRight className="h-5 w-5 rtl:rotate-180" />
           </Button>
-          <Link to="/menu" className="mt-3 block text-center text-sm font-semibold text-ink-soft hover:text-secondary">
+          <Link to="/menu" className="mt-3 block text-center text-sm font-semibold text-text-muted hover:text-secondary">
             {lang === "ar" ? "متابعة التسوق" : "Continue shopping"}
           </Link>
         </div>

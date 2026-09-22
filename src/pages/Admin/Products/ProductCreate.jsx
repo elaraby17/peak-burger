@@ -30,8 +30,8 @@ export default function ProductCreate() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "إضافة منتج" : "Add product"}</h1>
-      <div className="rounded-2xl bg-white p-6 shadow-card">
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "إضافة منتج" : "Add product"}</h1>
+      <div className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
         <ProductForm categories={categories} onSubmit={handleSubmit} isSaving={isSaving} />
       </div>
     </div>

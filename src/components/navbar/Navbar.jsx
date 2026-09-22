@@ -86,7 +86,7 @@ export default function Navbar() {
       <div
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/75 via-ink/35 to-transparent transition-opacity duration-300",
+          "pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink-deep/75 via-ink-deep/35 to-transparent transition-opacity duration-300",
           scrolled ? "opacity-0" : "opacity-100"
         )}
       />
@@ -95,7 +95,7 @@ export default function Navbar() {
         className={cn(
           "relative transition-[background-color,backdrop-filter,border-color,box-shadow] duration-300",
           scrolled
-            ? "border-b border-white/10 bg-ink/90 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-md"
+            ? "border-b border-white/10 bg-ink-deep/90 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-md"
             : "border-b border-transparent bg-transparent backdrop-blur-[2px]"
         )}
       >
@@ -245,7 +245,7 @@ export default function Navbar() {
             searchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
           )}
         >
-          <div className="border-t border-white/10 bg-ink/95 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8">
+          <div className="border-t border-white/10 bg-ink-deep/95 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8">
             <form
               onSubmit={submitSearch}
               className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20"
@@ -271,17 +271,17 @@ export default function Navbar() {
         )}
       >
         <div
-          className="absolute inset-0 bg-ink/50 backdrop-blur-[2px]"
+          className="absolute inset-0 bg-ink-deep/50 backdrop-blur-[2px]"
           onClick={() => setDrawerOpen(false)}
         />
         <div
           className={cn(
-            "absolute top-0 flex h-full w-80 max-w-[85vw] flex-col bg-cream shadow-[0_0_40px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-out",
+            "absolute top-0 flex h-full w-80 max-w-[85vw] flex-col bg-surface shadow-[0_0_40px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-out",
             lang === "ar" ? "end-0" : "start-0",
             drawerOpen ? "translate-x-0" : lang === "ar" ? "translate-x-full" : "-translate-x-full"
           )}
         >
-          <div className="flex items-center justify-between bg-ink px-6 py-5">
+          <div className="flex items-center justify-between bg-ink-deep px-6 py-5">
             <div className="flex items-center gap-2.5">
               <img src={logo} alt="Peak Burger" className="h-10 w-10 rounded-full object-cover ring-2 ring-cream/20" />
               <span className="font-display text-base font-extrabold text-cream">Peak Burger</span>
@@ -305,7 +305,7 @@ export default function Navbar() {
                 className={({ isActive }) =>
                   cn(
                     "rounded-xl px-4 py-3 font-display font-bold transition-colors",
-                    isActive ? "bg-ink text-cream" : "text-ink-soft hover:bg-ink/5"
+                    isActive ? "bg-primary text-text-dark" : "text-text-muted hover:bg-white/5 hover:text-text"
                   )
                 }
               >
@@ -315,20 +315,20 @@ export default function Navbar() {
             <Link
               to="/account/favorites"
               onClick={() => setDrawerOpen(false)}
-              className="rounded-xl px-4 py-3 font-display font-bold text-ink-soft transition-colors hover:bg-ink/5"
+              className="rounded-xl px-4 py-3 font-display font-bold text-cream-100/70 transition-colors hover:bg-white/5 hover:text-cream"
             >
               {lang === "ar" ? "المفضلة" : "Favorites"}
             </Link>
             <Link
               to={isAuthenticated ? "/account" : "/login"}
               onClick={() => setDrawerOpen(false)}
-              className="rounded-xl px-4 py-3 font-display font-bold text-ink-soft transition-colors hover:bg-ink/5"
+              className="rounded-xl px-4 py-3 font-display font-bold text-cream-100/70 transition-colors hover:bg-white/5 hover:text-cream"
             >
               {isAuthenticated ? (lang === "ar" ? "حسابي" : "My Account") : (lang === "ar" ? "تسجيل الدخول" : "Log In")}
             </Link>
           </nav>
 
-          <div className="mt-auto flex flex-col gap-3 border-t border-ink/10 px-4 py-4">
+          <div className="mt-auto flex flex-col gap-3 border-t border-white/10 px-4 py-4">
             <Link to={ORDER_ROUTE} onClick={() => setDrawerOpen(false)}>
               <Button variant="gold" size="lg" className="w-full gap-1.5">
                 {lang === "ar" ? "اطلب الآن" : "Order Now"}
@@ -337,7 +337,7 @@ export default function Navbar() {
             </Link>
             <a
               href={`tel:${PHONE_NUMBER.replace(/\s/g, "")}`}
-              className="flex items-center justify-center gap-2 text-sm font-semibold text-ink-soft"
+              className="flex items-center justify-center gap-2 text-sm font-semibold text-cream-100/70"
             >
               <Phone className="h-4 w-4" /> {PHONE_NUMBER}
             </a>
@@ -346,7 +346,7 @@ export default function Navbar() {
                 toggleLang();
                 setDrawerOpen(false);
               }}
-              className="flex items-center justify-center gap-2 rounded-xl bg-ink/5 px-4 py-2.5 text-sm font-bold text-ink-soft"
+              className="flex items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-bold text-cream-100/70 hover:text-cream"
             >
               <Languages className="h-4 w-4" /> {lang === "en" ? "العربية" : "English"}
             </button>

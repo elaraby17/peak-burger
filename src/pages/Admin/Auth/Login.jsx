@@ -40,13 +40,13 @@ export default function AdminLogin() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-ink px-4">
-      <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-card-hover">
+      <div className="w-full max-w-md rounded-3xl border border-line bg-surface-50 p-8 shadow-card-hover">
         <div className="mb-6 text-center">
           <img src={logo} alt="Peak Burger" className="mx-auto mb-3 h-14 w-14 rounded-full object-cover" />
-          <h1 className="font-display text-2xl font-extrabold text-ink">
+          <h1 className="font-display text-2xl font-extrabold text-text">
             {lang === "ar" ? "دخول لوحة التحكم" : "Admin login"}
           </h1>
-          <p className="mt-1 text-sm text-ink-soft">
+          <p className="mt-1 text-sm text-text-muted">
             {lang === "ar" ? "خاص بفريق بيك برجر فقط" : "Restricted to the Peak Burger team"}
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function AdminLogin() {
             {lang === "ar" ? "دخول" : "Log in"}
           </Button>
         </form>
-        <p className="mt-4 text-center text-xs text-ink-soft/70">
+        <p className="mt-4 text-center text-xs text-text-muted/70">
           {lang === "ar" ? "بيانات تجريبية: admin@peakburger.com / admin123" : "Demo credentials: admin@peakburger.com / admin123"}
         </p>
       </div>

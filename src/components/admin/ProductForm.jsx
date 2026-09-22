@@ -103,28 +103,28 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
         <Input label={lang === "ar" ? "الوصف بالعربي" : "Description (Arabic)"} value={form.descriptionAr} onChange={update("descriptionAr")} />
 
         <div>
-          <label className="mb-1.5 block text-sm font-semibold text-ink-soft">
+          <label className="mb-1.5 block text-sm font-semibold text-text-muted">
             {lang === "ar" ? "صورة المنتج" : "Product image"}
           </label>
           <input
             type="file"
             accept="image/png,image/jpeg,image/webp"
             onChange={onPickImage}
-            className="block w-full text-sm text-ink-soft file:mr-3 file:rounded-full file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-secondary-600"
+            className="block w-full text-sm text-text-muted file:mr-3 file:rounded-full file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-secondary-600"
           />
           {errors.image && <p className="mt-1 text-xs font-medium text-secondary">{errors.image}</p>}
         </div>
 
         <div className="flex flex-wrap gap-6 pt-1">
-          <label className="flex items-center gap-2 text-sm font-semibold text-ink">
+          <label className="flex items-center gap-2 text-sm font-semibold text-text">
             <input type="checkbox" checked={form.popular} onChange={update("popular")} className="h-4 w-4 accent-secondary" />
             {lang === "ar" ? "منتج شائع" : "Popular"}
           </label>
-          <label className="flex items-center gap-2 text-sm font-semibold text-ink">
+          <label className="flex items-center gap-2 text-sm font-semibold text-text">
             <input type="checkbox" checked={form.isNew} onChange={update("isNew")} className="h-4 w-4 accent-secondary" />
             {lang === "ar" ? "جديد" : "New"}
           </label>
-          <label className="flex items-center gap-2 text-sm font-semibold text-ink">
+          <label className="flex items-center gap-2 text-sm font-semibold text-text">
             <input type="checkbox" checked={form.active} onChange={update("active")} className="h-4 w-4 accent-secondary" />
             {lang === "ar" ? "مفعّل" : "Active"}
           </label>
@@ -136,12 +136,12 @@ export default function ProductForm({ initialProduct, categories, onSubmit, isSa
       </div>
 
       <div>
-        <p className="mb-2 text-sm font-bold text-ink-soft">{lang === "ar" ? "معاينة الصورة" : "Image preview"}</p>
-        <div className="aspect-square w-full overflow-hidden rounded-2xl bg-cream-100">
+        <p className="mb-2 text-sm font-bold text-text-muted">{lang === "ar" ? "معاينة الصورة" : "Image preview"}</p>
+        <div className="aspect-square w-full overflow-hidden rounded-2xl bg-surface-50">
           {preview ? (
             <img src={preview} alt="preview" className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full items-center justify-center text-xs text-ink-soft">
+            <div className="flex h-full items-center justify-center text-xs text-text-muted">
               {lang === "ar" ? "لا توجد صورة" : "No image"}
             </div>
           )}

@@ -55,7 +55,7 @@ export default function AdminSauces() {
   const productsWithSauceOptions = products.filter((p) => Array.isArray(p.sauceOptions));
 
   const columns = [
-    { key: "name", header: lang === "ar" ? "الاسم" : "Name", render: (s) => <span className="font-semibold text-ink">{lang === "ar" ? s.nameAr : s.nameEn}</span> },
+    { key: "name", header: lang === "ar" ? "الاسم" : "Name", render: (s) => <span className="font-semibold text-text">{lang === "ar" ? s.nameAr : s.nameEn}</span> },
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (s) => <StatusBadge status={s.active ? "active" : "inactive"} label={s.active ? (lang === "ar" ? "مفعّل" : "Active") : (lang === "ar" ? "متوقف" : "Inactive")} /> },
     { key: "assign", header: lang === "ar" ? "تخصيص للمنتجات" : "Assign to products", render: (s) => (
       <button onClick={() => setAssignFor(s)} className="text-xs font-semibold text-secondary hover:underline">
@@ -63,14 +63,14 @@ export default function AdminSauces() {
       </button>
     ) },
     { key: "actions", header: "", render: (s) => (
-      <button onClick={() => handleDelete(s)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary-50"><Trash2 className="h-4 w-4" /></button>
+      <button onClick={() => handleDelete(s)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary/15"><Trash2 className="h-4 w-4" /></button>
     ) },
   ];
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "الصوصات" : "Sauces"}</h1>
+        <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "الصوصات" : "Sauces"}</h1>
         <Button variant="primary" onClick={() => setIsCreating(true)}><Plus className="h-4 w-4" />{lang === "ar" ? "إضافة صوص" : "Add sauce"}</Button>
       </div>
 
@@ -90,7 +90,7 @@ export default function AdminSauces() {
             {productsWithSauceOptions.map((p) => {
               const checked = (p.sauceOptions || []).includes(assignFor.id);
               return (
-                <label key={p.id} className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 hover:bg-cream-100">
+                <label key={p.id} className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 hover:bg-surface-hover">
                   <input
                     type="checkbox"
                     checked={checked}
@@ -100,12 +100,12 @@ export default function AdminSauces() {
                     }}
                     className="h-4 w-4 accent-secondary"
                   />
-                  <span className="text-sm text-ink">{lang === "ar" ? p.name.ar : p.name.en}</span>
+                  <span className="text-sm text-text">{lang === "ar" ? p.name.ar : p.name.en}</span>
                 </label>
               );
             })}
             {productsWithSauceOptions.length === 0 && (
-              <p className="py-6 text-center text-sm text-ink-soft">{lang === "ar" ? "مفيش منتجات بتاخد صوص اختياري." : "No products currently offer a sauce choice."}</p>
+              <p className="py-6 text-center text-sm text-text-muted">{lang === "ar" ? "مفيش منتجات بتاخد صوص اختياري." : "No products currently offer a sauce choice."}</p>
             )}
           </div>
         )}

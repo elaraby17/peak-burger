@@ -34,11 +34,11 @@ export default function Profile() {
 
   return (
     <div className="max-w-xl space-y-6">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "الملف الشخصي" : "Profile"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "الملف الشخصي" : "Profile"}</h1>
 
-      <div className="flex items-center gap-4 rounded-2xl bg-white p-6 shadow-card">
+      <div className="flex items-center gap-4 rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
         <div className="relative">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary-100 text-2xl font-display font-bold text-secondary">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-surface-100 text-2xl font-display font-bold text-primary">
             {user?.avatar ? (
               <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
             ) : (
@@ -51,12 +51,12 @@ export default function Profile() {
           </label>
         </div>
         <div>
-          <p className="font-display font-bold text-ink">{user?.name}</p>
-          <p className="text-sm text-ink-soft">{user?.email}</p>
+          <p className="font-display font-bold text-text">{user?.name}</p>
+          <p className="text-sm text-text-muted">{user?.email}</p>
         </div>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4 rounded-2xl bg-white p-6 shadow-card">
+      <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
         <Input
           label={lang === "ar" ? "الاسم بالكامل" : "Full name"}
           icon={User}
