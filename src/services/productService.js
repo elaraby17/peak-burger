@@ -1,12 +1,28 @@
-// src/services/productService.js — استبدل بالكامل
+// src/services/productService.js
+// SINGLE frontend entry point for the Product API (Laravel peak-burger backend:
+// routes/api.php `apiResource('products')` + Api/ProductController).
 import api from "./api";
 
-// Backed by the real Laravel API (see ProductController / StoreProductRequest
-// you shared). Laravel expects category_id (numeric), name_en/name_ar as
-// separate flat fields, is_new (snake_case), and a real uploaded file for
-// image (multipart/form-data) - not the nested {en,ar} / URL-string shape
-// the rest of the app uses. Everything below adapts between the two shapes
-// so ProductForm.jsx and every other component keep working unchanged.
+// Reads the ApiResponseTrait envelope { success, message, data }. Resilient to
+// Laravel's paginate() wrapping the rows one level deeper as
+// { data: { data: [...], current_page, ... } } — before this fix, that shape
+// made `rows.map is not a function` throw and get swallowed silently by the
+// component's .catch(), making the whole section vanish with no console output.
+function unwrap(res) {
+    const body = res.data?.data;
+    if (Array.isArray(body)) return body;
+    if (body && Array.isArray(body.data)) return body.data;
+    return body;
+}
+
+// Logs the real cause (status + response body) before rethrowing, so a
+// caller's existing .catch()/fallback still runs — but you actually SEE why.
+function logAndRethrow(label) {
+    return (err) => {
+        console.error(`[productService] ${label} failed:`, err.response?.status, err.response?.data ?? err.message);
+        throw err;
+    };
+}
 
 function normalizeProduct(raw) {
     if (!raw) return null;
@@ -15,10 +31,7 @@ function normalizeProduct(raw) {
         slug: raw.slug,
         name: raw.name,
         description: raw.description,
-        // Frontend filters/links use the category *slug* as a string id.
         category: raw.category?.slug ?? raw.category,
-        // Kept so we can send category_id back on update (Laravel needs the
-        // numeric id, not the slug).
         categoryId: raw.category?.id ?? raw.category_id ?? null,
         price: raw.price !== null && raw.price !== undefined ? Number(raw.price) : null,
         image: raw.image,
@@ -37,11 +50,6 @@ function normalizeProduct(raw) {
     };
 }
 
-const unwrap = (res) => res.data.data;
-
-// payload here is the shape ProductForm.jsx builds (see the updated form):
-// { categoryId, nameEn, nameAr, descriptionEn, descriptionAr, price,
-//   popular, isNew, active, imageFile }
 function buildProductFormData(payload) {
     const fd = new FormData();
     fd.append("category_id", payload.categoryId);
@@ -63,78 +71,62 @@ export const productService = {
         api
             .get("/products")
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct)),
+            .then((rows) => rows.map(normalizeProduct))
+            .catch(logAndRethrow("getAll")),
 
-    // GET /api/products/{idOrSlug}
-    getById: (idOrSlug) =>
-        api
-            .get(`/products/${idOrSlug}`)
-            .then(unwrap)
-            .then(normalizeProduct)
-            .catch((err) => {
-                if (err.response?.status === 404) return null;
-                throw err;
-            }),
-
-    // GET /api/categories/{categoryId}/products
-    getByCategory: (categoryId) =>
-        api
-            .get(`/categories/${categoryId}/products`)
-            .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct)),
-
-    // GET /api/products?popular=1
+    // GET /api/products?popular=1 then filter on the real `popular` flag.
     getPopular: () =>
         api
             .get("/products", { params: { popular: 1 } })
             .then(unwrap)
             .then((rows) => rows.map(normalizeProduct))
-            .then((rows) => rows.filter((p) => p.popular)),
+            .then((rows) => rows.filter((p) => p.popular))
+            .catch(logAndRethrow("getPopular")),
 
-    // GET /api/products?q=
-    search: (query) => {
-        const q = query.trim();
-        if (!q) return Promise.resolve([]);
-        return api
-            .get("/products", { params: { q } })
+    // GET /api/products/{id} (numeric id — Laravel route-model binding)
+    getById: (id) =>
+        api
+            .get(`/products/${id}`)
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct));
-    },
+            .then(normalizeProduct)
+            .catch((err) => {
+                if (err.response?.status === 404) return null;
+                return logAndRethrow("getById")(err);
+            }),
 
-    // ---- Admin CRUD ----
-
-    // GET /api/admin/products (or /api/products if you haven't split admin routes yet)
+    // Admin uses the same product index as the customer menu.
     getAllAdmin: () =>
         api
             .get("/products")
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct)),
+            .then((rows) => rows.map(normalizeProduct))
+            .catch(logAndRethrow("getAllAdmin")),
 
-    // POST /api/products  (multipart/form-data - image is a real file)
+    // ---- Admin CRUD ----
+
     create: (payload) =>
         api
             .post("/products", buildProductFormData(payload), { headers: { "Content-Type": "multipart/form-data" } })
             .then(unwrap)
-            .then(normalizeProduct),
+            .then(normalizeProduct)
+            .catch(logAndRethrow("create")),
 
-    // POST /api/products/{id} + _method=PUT  (Laravel method-spoofing: PHP
-    // can't parse multipart bodies on native PUT requests)
     update: (id, payload) => {
         const fd = buildProductFormData(payload);
         fd.append("_method", "PUT");
         return api
             .post(`/products/${id}`, fd, { headers: { "Content-Type": "multipart/form-data" } })
             .then(unwrap)
-            .then(normalizeProduct);
+            .then(normalizeProduct)
+            .catch(logAndRethrow("update"));
     },
 
-    // DELETE /api/products/{id}
-    remove: (id) => api.delete(`/products/${id}`).then(() => true),
+    remove: (id) =>
+        api
+            .delete(`/products/${id}`)
+            .then(() => true)
+            .catch(logAndRethrow("remove")),
 
-    // No dedicated toggle-active route on the backend yet - reuses update()
-    // with the product's current fields plus a flipped `active`, so it works
-    // with today's controller (add a PATCH /toggle-active route later if you
-    // want a lighter-weight call).
     toggleActive: (product) =>
         productService.update(product.id, {
             categoryId: product.categoryId,
