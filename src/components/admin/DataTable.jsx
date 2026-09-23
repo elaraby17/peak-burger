@@ -15,10 +15,10 @@ export default function DataTable({ columns, rows, keyField = "id", emptyTitle, 
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-white shadow-card">
+    <div className="overflow-x-auto rounded-2xl border border-line bg-surface-50 shadow-card">
       <table className="w-full min-w-[720px] text-start text-sm">
         <thead>
-          <tr className="border-b border-ink/10 text-xs font-bold uppercase tracking-wide text-ink-soft">
+          <tr className="border-b border-line text-xs font-bold uppercase tracking-wide text-text-muted">
             {columns.map((col) => (
               <th key={col.key} className="whitespace-nowrap px-4 py-3 text-start">
                 {col.header}
@@ -26,11 +26,11 @@ export default function DataTable({ columns, rows, keyField = "id", emptyTitle, 
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-ink/5">
+        <tbody className="divide-y divide-white/10">
           {rows.map((row) => (
-            <tr key={row[keyField]} className="transition-colors hover:bg-cream-100/60">
+            <tr key={row[keyField]} className="transition-colors hover:bg-surface-hover">
               {columns.map((col) => (
-                <td key={col.key} className="whitespace-nowrap px-4 py-3 text-ink">
+                <td key={col.key} className="whitespace-nowrap px-4 py-3 text-text">
                   {col.render ? col.render(row) : row[col.key]}
                 </td>
               ))}

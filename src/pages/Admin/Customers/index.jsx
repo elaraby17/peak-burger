@@ -67,7 +67,7 @@ export default function AdminCustomers() {
   if (loadError) {
     return (
       <div className="space-y-4">
-        <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "العملاء" : "Customers"}</h1>
+        <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "العملاء" : "Customers"}</h1>
         <ErrorState
           title={lang === "ar" ? "معرفناش نجيب العملاء" : "Couldn't load customers"}
           description={lang === "ar" ? "تأكد إن السيرفر شغال وحاول تاني." : "Make sure the API is running and try again."}
@@ -83,7 +83,7 @@ export default function AdminCustomers() {
       header: lang === "ar" ? "الاسم" : "Name",
       render: (c) => (
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary-100 text-xs font-bold text-secondary">
+          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-surface-100 text-xs font-bold text-primary">
             {c.avatar && (
               <img
                 src={
@@ -94,7 +94,7 @@ export default function AdminCustomers() {
               />
             )}
           </div>
-          <span className="font-semibold text-ink">{c.name}</span>
+          <span className="font-semibold text-text">{c.name}</span>
         </div>
       ),
     },
@@ -104,7 +104,7 @@ export default function AdminCustomers() {
     {
       key: "spent",
       header: lang === "ar" ? "إجمالي الإنفاق" : "Total Spent",
-      render: (c) => <Price value={c.totalSpent} className="text-ink" />,
+      render: (c) => <Price value={c.totalSpent} className="text-text" />,
     },
     { key: "joined", header: lang === "ar" ? "تاريخ الانضمام" : "Joined", render: (c) => formatDate(c.joinedDate, { lang }) },
     {
@@ -123,14 +123,14 @@ export default function AdminCustomers() {
         <div className="flex items-center gap-1">
           <Link
             to={`/admin/customers/${c.id}`}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover"
             aria-label={lang === "ar" ? "عرض العميل" : "View customer"}
           >
             <Eye className="h-4 w-4" />
           </Link>
           <button
             onClick={() => handleDelete(c)}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-secondary-50 hover:text-secondary"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-secondary/15 hover:text-secondary"
             aria-label={lang === "ar" ? "حذف العميل" : "Delete customer"}
           >
             <Trash2 className="h-4 w-4" />
@@ -142,7 +142,7 @@ export default function AdminCustomers() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "العملاء" : "Customers"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "العملاء" : "Customers"}</h1>
       <FilterBar
         search={search}
         onSearchChange={setSearch}

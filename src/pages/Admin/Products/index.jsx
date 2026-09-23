@@ -67,15 +67,15 @@ export default function AdminProducts() {
   };
 
   const handleToggle = async (p) => {
-    await productService.toggleActive(p.id);
+    await productService.toggleActive(p);
     await load();
   };
 
   const columns = [
     { key: "image", header: "", render: (p) => <img src={p.image} alt="" className="h-10 w-10 rounded-lg object-cover" onError={(e) => { e.currentTarget.style.visibility = "hidden"; }} /> },
-    { key: "name", header: lang === "ar" ? "المنتج" : "Product", render: (p) => <span className="font-semibold text-ink">{lang === "ar" ? p.name.ar : p.name.en}</span> },
+    { key: "name", header: lang === "ar" ? "المنتج" : "Product", render: (p) => <span className="font-semibold text-text">{lang === "ar" ? p.name.ar : p.name.en}</span> },
     { key: "category", header: lang === "ar" ? "القسم" : "Category", render: (p) => categories.find((c) => c.id === p.category)?.[lang === "ar" ? "name" : "name"]?.[lang] || p.category },
-    { key: "price", header: lang === "ar" ? "السعر" : "Price", render: (p) => <Price value={p.price} className="text-ink" /> },
+    { key: "price", header: lang === "ar" ? "السعر" : "Price", render: (p) => <Price value={p.price} className="text-text" /> },
     { key: "popular", header: lang === "ar" ? "شائع" : "Popular", render: (p) => (p.popular ? "✓" : "-") },
     { key: "isNew", header: lang === "ar" ? "جديد" : "New", render: (p) => (p.isNew ? "✓" : "-") },
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (p) => <StatusBadge status={p.active === false ? "inactive" : "active"} label={p.active === false ? (lang === "ar" ? "متوقف" : "Inactive") : (lang === "ar" ? "مفعّل" : "Active")} /> },
@@ -84,9 +84,9 @@ export default function AdminProducts() {
       header: "",
       render: (p) => (
         <div className="flex gap-1">
-          <Link to={`/admin/products/${p.id}/edit`} className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100"><Pencil className="h-4 w-4" /></Link>
-          <button onClick={() => handleToggle(p)} className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100"><Power className="h-4 w-4" /></button>
-          <button onClick={() => handleDelete(p)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary-50"><Trash2 className="h-4 w-4" /></button>
+          <Link to={`/admin/products/${p.id}/edit`} className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover"><Pencil className="h-4 w-4" /></Link>
+          <button onClick={() => handleToggle(p)} className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover"><Power className="h-4 w-4" /></button>
+          <button onClick={() => handleDelete(p)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary/15"><Trash2 className="h-4 w-4" /></button>
         </div>
       ),
     },
@@ -95,7 +95,7 @@ export default function AdminProducts() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "المنتجات" : "Products"}</h1>
+        <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "المنتجات" : "Products"}</h1>
         <Link to="/admin/products/create">
           <Button variant="primary"><Plus className="h-4 w-4" />{lang === "ar" ? "إضافة منتج" : "Add product"}</Button>
         </Link>

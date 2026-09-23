@@ -68,10 +68,10 @@ export default function AdminOffers() {
   };
 
   const columns = [
-    { key: "title", header: lang === "ar" ? "العرض" : "Offer", render: (o) => <span className="font-semibold text-ink">{t(o.title)}</span> },
+    { key: "title", header: lang === "ar" ? "العرض" : "Offer", render: (o) => <span className="font-semibold text-text">{t(o.title)}</span> },
     { key: "price", header: lang === "ar" ? "السعر" : "Price", render: (o) => (
       <span className="flex items-center gap-2">
-        <span className="text-xs text-ink-soft/60 line-through"><Price value={o.oldPrice} /></span>
+        <span className="text-xs text-text-muted/60 line-through"><Price value={o.oldPrice} /></span>
         <Price value={o.offerPrice} className="text-secondary" />
       </span>
     ) },
@@ -79,8 +79,8 @@ export default function AdminOffers() {
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (o) => <StatusBadge status={o.active ? "active" : "inactive"} label={o.active ? (lang === "ar" ? "مفعّل" : "Active") : (lang === "ar" ? "متوقف" : "Inactive")} /> },
     { key: "actions", header: "", render: (o) => (
       <div className="flex gap-1">
-        <button onClick={() => setEditing(o)} className="flex h-8 w-8 items-center justify-center rounded-full text-ink-soft hover:bg-cream-100"><Pencil className="h-4 w-4" /></button>
-        <button onClick={() => handleDelete(o)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary-50"><Trash2 className="h-4 w-4" /></button>
+        <button onClick={() => setEditing(o)} className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-surface-hover"><Pencil className="h-4 w-4" /></button>
+        <button onClick={() => handleDelete(o)} className="flex h-8 w-8 items-center justify-center rounded-full text-secondary hover:bg-secondary/15"><Trash2 className="h-4 w-4" /></button>
       </div>
     ) },
   ];
@@ -88,7 +88,7 @@ export default function AdminOffers() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "العروض" : "Offers"}</h1>
+        <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "العروض" : "Offers"}</h1>
         <Button variant="primary" onClick={() => setEditing({})}><Plus className="h-4 w-4" />{lang === "ar" ? "إضافة عرض" : "Add offer"}</Button>
       </div>
 
@@ -110,7 +110,7 @@ export default function AdminOffers() {
             <Input type="date" label={lang === "ar" ? "تاريخ البداية" : "Start date"} value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
             <Input type="date" label={lang === "ar" ? "تاريخ النهاية" : "End date"} value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
           </div>
-          <label className="flex items-center gap-2 text-sm font-semibold text-ink">
+          <label className="flex items-center gap-2 text-sm font-semibold text-text">
             <input type="checkbox" checked={form.active} onChange={(e) => setForm({ ...form, active: e.target.checked })} className="h-4 w-4 accent-secondary" />
             {lang === "ar" ? "مفعّل" : "Active"}
           </label>

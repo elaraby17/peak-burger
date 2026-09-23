@@ -7,7 +7,7 @@ export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-cream-100/60">
+    <div className="flex min-h-screen bg-surface">
       <AdminSidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminTopbar onMenuClick={() => setMobileOpen(true)} />

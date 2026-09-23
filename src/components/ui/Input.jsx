@@ -6,19 +6,19 @@ const Input = forwardRef(({ label, error, className, id, icon: Icon, ...props },
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={inputId} className="mb-1.5 block text-sm font-semibold text-ink-soft">
+        <label htmlFor={inputId} className="mb-1.5 block text-sm font-semibold text-text-muted">
           {label}
         </label>
       )}
       <div className="relative">
         {Icon && (
-          <Icon className="pointer-events-none absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-ink-soft/50" />
+          <Icon className="pointer-events-none absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-text-muted/70" />
         )}
         <input
           ref={ref}
           id={inputId}
           className={cn(
-            "h-12 w-full rounded-xl border-2 border-ink/10 bg-white px-4 text-ink placeholder:text-ink-soft/40 transition-colors focus:border-primary",
+            "h-12 w-full rounded-xl border border-line bg-surface-50 px-4 text-text placeholder:text-text-muted/70 transition-colors focus:border-primary",
             Icon && "ps-10",
             error && "border-secondary focus:border-secondary",
             className

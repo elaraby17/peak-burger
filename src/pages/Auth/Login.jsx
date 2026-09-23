@@ -70,7 +70,7 @@ export default function Login() {
         />
         {error && <p className="text-sm font-medium text-secondary">{error}</p>}
         <div className="flex justify-end">
-          <Link to="/forgot-password" className="text-sm font-semibold text-ink-soft hover:text-secondary">
+          <Link to="/forgot-password" className="text-sm font-semibold text-text-muted hover:text-secondary">
             {lang === "ar" ? "نسيت كلمة المرور؟" : "Forgot password?"}
           </Link>
         </div>

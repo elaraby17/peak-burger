@@ -21,4 +21,23 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Admin-scoped client. Same base URL but its own Authorization header so an
+// admin token is never attached to customer endpoints and a customer token is
+// never attached to admin endpoints.
+export const adminApi = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
+
+adminApi.interceptors.request.use((config) => {
+  const session = readStorage(STORAGE_KEYS.ADMIN_AUTH, null);
+  if (session?.token) {
+    config.headers.Authorization = `Bearer ${session.token}`;
+  }
+  return config;
+});
+
 export default api;

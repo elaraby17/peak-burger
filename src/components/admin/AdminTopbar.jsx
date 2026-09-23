@@ -23,9 +23,9 @@ export default function AdminTopbar({ onMenuClick }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-ink/5 bg-cream/90 px-4 backdrop-blur-md sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-ink-deep/90 px-4 backdrop-blur-md sm:px-6">
       <button
-        className="flex h-10 w-10 items-center justify-center rounded-full text-ink lg:hidden"
+        className="flex h-10 w-10 items-center justify-center rounded-full text-text lg:hidden"
         onClick={onMenuClick}
         aria-label="Open menu"
       >
@@ -35,7 +35,7 @@ export default function AdminTopbar({ onMenuClick }) {
       <div className="ms-auto flex items-center gap-2">
         <button
           onClick={toggleLang}
-          className="hidden h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-ink-soft hover:bg-white sm:flex"
+          className="hidden h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-text-muted hover:bg-surface-50 sm:flex"
         >
           <Languages className="h-4 w-4" />
           {lang === "en" ? "AR" : "EN"}
@@ -43,18 +43,18 @@ export default function AdminTopbar({ onMenuClick }) {
 
         <Link
           to="/admin/profile"
-          className="flex items-center gap-2 rounded-full py-1.5 pe-3 ps-1.5 hover:bg-white"
+          className="flex items-center gap-2 rounded-full py-1.5 pe-3 ps-1.5 hover:bg-surface-50"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-secondary">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-100 text-primary">
             <User className="h-4 w-4" />
           </div>
-          <span className="hidden text-sm font-semibold text-ink sm:block">{admin?.name}</span>
+          <span className="hidden text-sm font-semibold text-text sm:block">{admin?.name}</span>
         </Link>
 
         <button
           onClick={handleLogout}
           aria-label="Logout"
-          className="flex h-10 w-10 items-center justify-center rounded-full text-secondary hover:bg-secondary-50"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-secondary hover:bg-secondary/15"
         >
           <LogOut className="h-4.5 w-4.5" />
         </button>

@@ -41,18 +41,18 @@ export default function OrderDetail() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link to="/account/orders" className="text-sm font-semibold text-ink-soft hover:text-secondary">
+          <Link to="/account/orders" className="text-sm font-semibold text-text-muted hover:text-secondary">
             {lang === "ar" ? "← كل الطلبات" : "← All orders"}
           </Link>
-          <h1 className="mt-1 font-display text-2xl font-extrabold text-ink">{order.id}</h1>
-          <p className="text-sm text-ink-soft">{formatDate(order.date, { lang })}</p>
+          <h1 className="mt-1 font-display text-2xl font-extrabold text-text">{order.id}</h1>
+          <p className="text-sm text-text-muted">{formatDate(order.date, { lang })}</p>
         </div>
         <Badge tone={statusTone[order.status]}>{t(statusLabels[order.status])}</Badge>
       </div>
 
       {/* Visual order timeline */}
       {!isCancelled && (
-        <div className="rounded-2xl bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
           <ol className="flex flex-col gap-0 sm:flex-row sm:items-start">
             {ORDER_STATUSES.map((status, index) => {
               const reached = index <= currentStep;
@@ -64,19 +64,19 @@ export default function OrderDetail() {
                       {reached ? (
                         <CheckCircle2 className="h-6 w-6 shrink-0 text-secondary" />
                       ) : (
-                        <Circle className="h-6 w-6 shrink-0 text-ink/20" />
+                        <Circle className="h-6 w-6 shrink-0 text-white/20" />
                       )}
                       {!isLast && (
                         <div
                           className={cn(
                             "hidden h-0.5 flex-1 sm:block",
-                            index < currentStep ? "bg-secondary" : "bg-ink/10"
+                            index < currentStep ? "bg-secondary" : "bg-white/10"
                           )}
                         />
                       )}
                     </div>
                   </div>
-                  <p className={cn("pb-4 text-xs font-semibold sm:pt-2", reached ? "text-ink" : "text-ink-soft/50")}>
+                  <p className={cn("pb-4 text-xs font-semibold sm:pt-2", reached ? "text-text" : "text-text-muted/50")}>
                     {t(statusLabels[status])}
                   </p>
                 </li>
@@ -88,27 +88,27 @@ export default function OrderDetail() {
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-3">
-          <h2 className="font-display text-lg font-bold text-ink">{lang === "ar" ? "المنتجات" : "Items"}</h2>
+          <h2 className="font-display text-lg font-bold text-text">{lang === "ar" ? "المنتجات" : "Items"}</h2>
           {order.items?.map((item) => (
-            <div key={item.lineId} className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-card">
+            <div key={item.lineId} className="flex items-center justify-between rounded-2xl border border-line bg-surface-50 p-4 shadow-card">
               <div>
-                <p className="font-semibold text-ink">{t(item.name)}</p>
-                <p className="text-xs text-ink-soft">
+                <p className="font-semibold text-text">{t(item.name)}</p>
+                <p className="text-xs text-text-muted">
                   {item.size && `${t(item.size.label)} · `}
                   {lang === "ar" ? `الكمية: ${item.quantity}` : `Qty: ${item.quantity}`}
                 </p>
               </div>
-              <Price value={item.unitPrice * item.quantity} className="text-ink" />
+              <Price value={item.unitPrice * item.quantity} className="text-text" />
             </div>
           ))}
         </div>
 
-        <div className="h-fit space-y-4 rounded-2xl bg-white p-6 shadow-card">
+        <div className="h-fit space-y-4 rounded-2xl border border-line bg-surface-50 p-6 shadow-card">
           <div>
-            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-ink">
+            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-text">
               <MapPin className="h-4 w-4 text-secondary" /> {lang === "ar" ? "عنوان التوصيل" : "Delivery address"}
             </h3>
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-text-muted">
               {order.address?.governorate}, {order.address?.area}
               <br />
               {order.address?.address}
@@ -117,10 +117,10 @@ export default function OrderDetail() {
             </p>
           </div>
           <div>
-            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-ink">
+            <h3 className="mb-2 flex items-center gap-2 font-display font-bold text-text">
               <CreditCard className="h-4 w-4 text-secondary" /> {lang === "ar" ? "طريقة الدفع" : "Payment"}
             </h3>
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-text-muted">
               {order.payment === "Cash on Delivery" || order.payment === undefined
                 ? lang === "ar"
                   ? "الدفع عند الاستلام"
@@ -130,16 +130,16 @@ export default function OrderDetail() {
                 : "Online Payment (coming soon)"}
             </p>
           </div>
-          <div className="border-t border-ink/10 pt-4 text-sm">
-            <div className="flex justify-between text-ink-soft">
+          <div className="border-t border-line pt-4 text-sm">
+            <div className="flex justify-between text-text-muted">
               <span>{lang === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-              <Price value={order.subtotal} className="text-ink" />
+              <Price value={order.subtotal} className="text-text" />
             </div>
-            <div className="mt-1 flex justify-between text-ink-soft">
+            <div className="mt-1 flex justify-between text-text-muted">
               <span>{lang === "ar" ? "التوصيل" : "Delivery"}</span>
-              <Price value={order.deliveryFee} className="text-ink" />
+              <Price value={order.deliveryFee} className="text-text" />
             </div>
-            <div className="mt-2 flex justify-between border-t border-ink/10 pt-2 font-display font-bold text-ink">
+            <div className="mt-2 flex justify-between border-t border-line pt-2 font-display font-bold text-text">
               <span>{lang === "ar" ? "الإجمالي" : "Total"}</span>
               <Price value={order.total} />
             </div>

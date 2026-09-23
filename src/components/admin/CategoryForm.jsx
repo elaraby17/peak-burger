@@ -56,7 +56,7 @@ export default function CategoryForm({ initialCategory, onSubmit, isSaving }) {
       <Input label={lang === "ar" ? "الوصف بالعربي" : "Description (Arabic)"} value={form.descriptionAr} onChange={update("descriptionAr")} />
 
       <div>
-        <p className="mb-1.5 text-sm font-semibold text-ink-soft">{lang === "ar" ? "الأيقونة" : "Icon"}</p>
+        <p className="mb-1.5 text-sm font-semibold text-text-muted">{lang === "ar" ? "الأيقونة" : "Icon"}</p>
         <div className="flex flex-wrap gap-2">
           {icons.map((icon) => (
             <button
@@ -64,7 +64,7 @@ export default function CategoryForm({ initialCategory, onSubmit, isSaving }) {
               key={icon}
               onClick={() => setForm((f) => ({ ...f, icon }))}
               className={`rounded-full border-2 px-3 py-1.5 text-xs font-semibold ${
-                form.icon === icon ? "border-secondary bg-secondary text-white" : "border-ink/10 text-ink-soft"
+                form.icon === icon ? "border-secondary bg-secondary text-white" : "border-line text-text-muted"
               }`}
             >
               {icon}
@@ -73,7 +73,7 @@ export default function CategoryForm({ initialCategory, onSubmit, isSaving }) {
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm font-semibold text-ink">
+      <label className="flex items-center gap-2 text-sm font-semibold text-text">
         <input type="checkbox" checked={form.active} onChange={update("active")} className="h-4 w-4 accent-secondary" />
         {lang === "ar" ? "مفعّل" : "Active"}
       </label>

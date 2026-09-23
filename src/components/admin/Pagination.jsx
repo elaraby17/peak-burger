@@ -8,7 +8,7 @@ export default function Pagination({ page, totalPages, onChange }) {
 
   return (
     <div className="flex items-center justify-between gap-3 pt-4">
-      <p className="text-xs text-ink-soft">
+      <p className="text-xs text-text-muted">
         {lang === "ar" ? `صفحة ${page} من ${totalPages}` : `Page ${page} of ${totalPages}`}
       </p>
       <div className="flex gap-2">

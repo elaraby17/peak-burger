@@ -4,12 +4,21 @@
 
 html {
   scroll-behavior: smooth;
+  background: #121017;
+  color: #F5F1E8;
 }
 
 body {
-  @apply bg-cream text-ink antialiased;
+  /* @apply bg-surface text-foreground antialiased; */
   font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
   font-feature-settings: "tnum" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  background: #121017;
+  color: #F5F1E8;
+  min-height: 100%;
 }
 
 [dir="rtl"] body {
@@ -33,7 +42,16 @@ h1, h2, h3, h4, .font-display {
 
 ::selection {
   background: #F5B400;
-  color: #1A1512;
+  color: #050505;
+}
+
+input, textarea, select {
+  color: #F5F1E8;
+  background-color: #1C1810;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #B9AFA1;
 }
 
 /* Signature: mountain-peak skyline divider between sections, echoing the Peak Burger logo mark */

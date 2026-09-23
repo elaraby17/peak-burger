@@ -43,24 +43,24 @@ export default function Orders() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "طلباتي" : "My Orders"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "طلباتي" : "My Orders"}</h1>
       <div className="space-y-3">
         {orders.map((order) => (
           <Link
             key={order.id}
             to={`/account/orders/${order.id}`}
-            className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-4 shadow-card transition-shadow hover:shadow-card-hover sm:flex-nowrap"
+            className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface-50 p-4 shadow-card transition-shadow hover:shadow-card-hover sm:flex-nowrap"
           >
             <div className="min-w-[100px]">
-              <p className="font-display font-bold text-ink">{order.id}</p>
-              <p className="text-xs text-ink-soft">{formatDate(order.date, { lang })}</p>
+              <p className="font-display font-bold text-text">{order.id}</p>
+              <p className="text-xs text-text-muted">{formatDate(order.date, { lang })}</p>
             </div>
-            <div className="flex-1 text-sm text-ink-soft">
+            <div className="flex-1 text-sm text-text-muted">
               {order.items?.length ?? 0} {lang === "ar" ? "صنف" : "items"}
             </div>
             <Badge tone={statusTone[order.status]}>{t(statusLabels[order.status])}</Badge>
-            <Price value={order.total} className="text-ink" />
-            <ChevronRight className="h-4 w-4 text-ink-soft rtl:rotate-180" />
+            <Price value={order.total} className="text-text" />
+            <ChevronRight className="h-4 w-4 text-text-muted rtl:rotate-180" />
           </Link>
         ))}
       </div>

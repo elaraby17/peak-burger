@@ -1,8 +1,16 @@
+// src/services/productService.js
 
+import api, { adminApi } from "./api";
 
-import api from "./api";
-
-
+/**
+ * Unwrap Laravel ApiResponseTrait responses.
+ *
+ * Supports:
+ * { success: true, data: [...] }
+ *
+ * and paginated responses:
+ * { success: true, data: { data: [...] } }
+ */
 function unwrap(res) {
     const payload = res?.data;
 
@@ -10,12 +18,10 @@ function unwrap(res) {
         return [];
     }
 
-    // Normal API response
     if (Array.isArray(payload.data)) {
         return payload.data;
     }
 
-    // Paginated API response
     if (
         payload.data &&
         typeof payload.data === "object" &&
@@ -24,7 +30,6 @@ function unwrap(res) {
         return payload.data.data;
     }
 
-    // Some endpoints may return an array directly
     if (Array.isArray(payload)) {
         return payload;
     }
@@ -32,19 +37,8 @@ function unwrap(res) {
     return [];
 }
 
-/**
- * Log API errors and rethrow them.
- */
-function logAndRethrow(label) {
-    return (err) => {
-        console.error(
-            `[productService] ${label} failed:`,
-            err?.response?.status,
-            err?.response?.data ?? err?.message
-        );
-
-        throw err;
-    };
+function rethrowError(err) {
+    throw err;
 }
 
 /**
@@ -60,6 +54,7 @@ function normalizeProduct(raw) {
 
     return {
         id: raw.id,
+
         slug: raw.slug,
 
         name: raw.name ?? {
@@ -143,20 +138,20 @@ function normalizeProducts(rows) {
 /**
  * Build multipart FormData for product create/update.
  */
-function buildProductFormData(payload) {
+function buildProductFormData(payload = {}) {
     const fd = new FormData();
 
-    fd.append("category_id", payload.categoryId);
-    fd.append("name_en", payload.nameEn);
-    fd.append("name_ar", payload.nameAr);
+    fd.append("category_id", payload.categoryId ?? "");
+    fd.append("name_en", payload.nameEn ?? "");
+    fd.append("name_ar", payload.nameAr ?? "");
     fd.append("description_en", payload.descriptionEn ?? "");
     fd.append("description_ar", payload.descriptionAr ?? "");
-    fd.append("price", payload.price);
-    fd.append("active", payload.active ? 1 : 0);
-    fd.append("popular", payload.popular ? 1 : 0);
-    fd.append("is_new", payload.isNew ? 1 : 0);
+    fd.append("price", payload.price ?? "");
+    fd.append("active", payload.active ? "1" : "0");
+    fd.append("popular", payload.popular ? "1" : "0");
+    fd.append("is_new", payload.isNew ? "1" : "0");
 
-    if (payload.imageFile) {
+    if (payload.imageFile instanceof File) {
         fd.append("image", payload.imageFile);
     }
 
@@ -164,34 +159,32 @@ function buildProductFormData(payload) {
 }
 
 export const productService = {
-    // GET all products
+    /**
+     * GET /api/user/products
+     */
     getAll: () =>
         api
-            .get("/products")
+            .get("user/products")
             .then(unwrap)
             .then(normalizeProducts)
-            .catch(logAndRethrow("getAll")),
+            .catch(rethrowError),
 
-    // GET popular products
+    /**
+     * GET /api/user/products/popular
+     */
     getPopular: () =>
         api
-            .get("/products/popular")
+            .get("user/products/popular")
             .then(unwrap)
             .then(normalizeProducts)
-            .then((products) => {
-                console.log(
-                    "[productService] Popular products:",
-                    products
-                );
+            .catch(rethrowError),
 
-                return products;
-            })
-            .catch(logAndRethrow("getPopular")),
-
-    // GET product by ID or slug
-    getById: (idOrSlug) =>
+    /**
+     * GET /api/user/products/{id}
+     */
+    getById: (id) =>
         api
-            .get(`/products/${idOrSlug}`)
+            .get(`user/products/${id}`)
             .then(unwrap)
             .then((data) => {
                 if (Array.isArray(data)) {
@@ -205,18 +198,22 @@ export const productService = {
                     return null;
                 }
 
-                return logAndRethrow("getById")(err);
+                return rethrowError(err);
             }),
 
-    // GET products by category
+    /**
+     * GET products by category
+     */
     getByCategory: (categoryId) =>
         api
             .get(`/categories/${categoryId}/products`)
             .then(unwrap)
             .then(normalizeProducts)
-            .catch(logAndRethrow("getByCategory")),
+            .catch(rethrowError),
 
-    // Search products
+    /**
+     * Search products
+     */
     search: (query) => {
         const q = query.trim();
 
@@ -225,29 +222,56 @@ export const productService = {
         }
 
         return api
-            .get("/products", {
+            .get("user/products", {
                 params: { q },
             })
             .then(unwrap)
             .then(normalizeProducts)
-            .catch(logAndRethrow("search"));
+            .catch(rethrowError);
     },
 
-     //-------- Admin CRUD --------------//
-
-    //  get all products
+    /**
+     * Admin listing
+     * GET /api/admin/products
+     */
     getAllAdmin: () =>
-        api
-            .get("/products")
+        adminApi
+            .get("admin/products")
             .then(unwrap)
             .then(normalizeProducts)
-            .catch(logAndRethrow("getAllAdmin")),
+            .catch(rethrowError),
 
-    // Create product
+    /**
+     * Admin read
+     * GET /api/admin/products/{id}
+     */
+    getByIdAdmin: (id) =>
+        adminApi
+            .get(`admin/products/${id}`)
+            .then(unwrap)
+            .then((data) => {
+                if (Array.isArray(data)) {
+                    return normalizeProduct(data[0]);
+                }
+
+                return normalizeProduct(data);
+            })
+            .catch((err) => {
+                if (err?.response?.status === 404) {
+                    return null;
+                }
+
+                return rethrowError(err);
+            }),
+
+    /**
+     * Create product
+     * POST /api/admin/products
+     */
     create: (payload) =>
-        api
+        adminApi
             .post(
-                "/products",
+                "admin/products",
                 buildProductFormData(payload),
                 {
                     headers: {
@@ -257,43 +281,57 @@ export const productService = {
             )
             .then(unwrap)
             .then(normalizeProduct)
-            .catch(logAndRethrow("create")),
+            .catch(rethrowError),
 
-    // Update product
+    /**
+     * Update product
+     * PUT /api/admin/products/{id}
+     */
     update: (id, payload) => {
         const fd = buildProductFormData(payload);
 
         fd.append("_method", "PUT");
 
-        return api
-            .post(`/products/${id}`, fd, {
+        return adminApi
+            .post(`admin/products/${id}`, fd, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
             .then(unwrap)
             .then(normalizeProduct)
-            .catch(logAndRethrow("update"));
+            .catch(rethrowError);
     },
 
-    // Delete product
+    /**
+     * Delete product
+     * DELETE /api/admin/products/{id}
+     */
     remove: (id) =>
-        api
-            .delete(`/products/${id}`)
+        adminApi
+            .delete(`admin/products/${id}`)
             .then(() => true)
-            .catch(logAndRethrow("remove")),
+            .catch(rethrowError),
 
-    // Toggle product active status
+    /**
+     * Toggle product active status
+     */
     toggleActive: (product) =>
         productService.update(product.id, {
             categoryId: product.categoryId,
+
             nameEn: product.name?.en ?? "",
             nameAr: product.name?.ar ?? "",
+
             descriptionEn: product.description?.en ?? "",
             descriptionAr: product.description?.ar ?? "",
+
             price: product.price,
+
             popular: product.popular,
+
             isNew: product.isNew,
+
             active: product.active === false,
         }),
 };

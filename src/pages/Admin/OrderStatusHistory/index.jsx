@@ -21,7 +21,7 @@ export default function AdminOrderStatusHistory() {
 
   const columns = [
     { key: "order", header: lang === "ar" ? "رقم الطلب" : "Order #", render: (h) => (
-      <Link to={`/admin/orders/${h.orderId}`} className="font-display font-bold text-ink hover:text-secondary">{h.orderId}</Link>
+      <Link to={`/admin/orders/${h.orderId}`} className="font-display font-bold text-text hover:text-secondary">{h.orderId}</Link>
     ) },
     { key: "status", header: lang === "ar" ? "الحالة" : "Status", render: (h) => <StatusBadge status={h.status} label={t(statusLabels[h.status]) || h.status} /> },
     { key: "changedBy", header: lang === "ar" ? "تم بواسطة" : "Changed by" },
@@ -30,7 +30,7 @@ export default function AdminOrderStatusHistory() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-extrabold text-ink">{lang === "ar" ? "سجل حالات الطلبات" : "Order Status History"}</h1>
+      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "سجل حالات الطلبات" : "Order Status History"}</h1>
       <DataTable columns={columns} rows={[...history].reverse()} emptyTitle={lang === "ar" ? "مفيش سجل" : "No history yet"} />
     </div>
   );

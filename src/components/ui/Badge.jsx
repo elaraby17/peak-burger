@@ -1,10 +1,10 @@
 import { cn } from "../../utils/cn";
 
 const tones = {
-  primary: "bg-primary text-ink",
+  primary: "bg-primary text-text-dark",
   secondary: "bg-secondary text-white",
-  ink: "bg-ink text-white",
-  outline: "border border-ink/15 text-ink-soft bg-white",
+  ink: "bg-ink-deep text-white",
+  outline: "border border-line text-text-muted bg-surface-50",
 };
 
 export default function Badge({ tone = "primary", className, children }) {

@@ -1,5 +1,5 @@
 // src/services/categoryService.js — استبدل بالكامل
-import api from "./api";
+import api, { adminApi } from "./api";
 
 function normalizeCategory(raw) {
     if (!raw) return null;
@@ -30,14 +30,14 @@ export const categoryService = {
     // GET /api/categories
     getAll: () =>
         api
-            .get("/categories")
+            .get("user/categories")
             .then(unwrap)
             .then((rows) => rows.map(normalizeCategory)),
 
     // GET /api/categories/{id}
     getById: (id) =>
         api
-            .get(`/categories/${id}`)
+            .get(`user/categories/${id}`)
             .then(unwrap)
             .then(normalizeCategory)
             .catch((err) => {
@@ -45,18 +45,18 @@ export const categoryService = {
                 throw err;
             }),
 
-    // ---- Admin CRUD ----
+    // ---- Admin CRUD (adminApi + admin token) ----
 
-    // POST /api/categories
-    create: (payload) => api.post("/categories", toApiPayload(payload)).then(unwrap).then(normalizeCategory),
+    // POST /api/admin/categories
+    create: (payload) => adminApi.post("admin/categories", toApiPayload(payload)).then(unwrap).then(normalizeCategory),
 
-    // PUT /api/categories/{numericId}
+    // PUT /api/admin/categories/{numericId}
     // NOTE: Laravel route-model-binds on the numeric id, not the slug - pass
     // the numeric id here (categories.find(c => c.id === slug).numericId).
-    update: (numericId, payload) => api.put(`/categories/${numericId}`, toApiPayload(payload)).then(unwrap).then(normalizeCategory),
+    update: (numericId, payload) => adminApi.put(`admin/categories/${numericId}`, toApiPayload(payload)).then(unwrap).then(normalizeCategory),
 
-    // DELETE /api/categories/{numericId}
-    remove: (numericId) => api.delete(`/categories/${numericId}`).then(() => true),
+    // DELETE /api/admin/categories/{numericId}
+    remove: (numericId) => adminApi.delete(`admin/categories/${numericId}`).then(() => true),
 
     // No dedicated toggle-active route yet - reuse update() with current fields.
     toggleActive: (category) =>

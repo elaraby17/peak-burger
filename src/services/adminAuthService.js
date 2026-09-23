@@ -1,46 +1,106 @@
+import { adminApi } from "./api";
 import { STORAGE_KEYS, readStorage, writeStorage, removeStorage } from "../utils/storage";
-import { adminUserSeed } from "../data/adminUsers";
 
-// Frontend-only admin auth simulation, mirroring authService.js's shape
-// (same Promise-based API, same "session in localStorage" pattern) so it's
-// a drop-in swap for Laravel Sanctum later.
+// Backed by Laravel admin auth endpoints:
+//   POST /api/admin/auth/login  -> { success, message, data: { token }, errors }
+//   POST /api/admin/auth/logout -> { success, message, data: null, errors }
+//   GET  /api/admin/me          -> { success, message, data: {...admin}, errors }
+// IMPORTANT: the login response carries ONLY the token - the admin profile
+// object is fetched separately from /admin/me. The persisted session is always
+// { token, admin } where admin is optionally enriched after login.
 
-const LATENCY = 300;
-const delay = (value) => new Promise((resolve) => setTimeout(() => resolve(value), LATENCY));
-const fail = (message) => new Promise((_, reject) => setTimeout(() => reject(new Error(message)), LATENCY));
+const unwrap = (res) => res.data.data;
 
-function toSession(admin) {
-  const { password, ...safe } = admin;
-  return { ...safe, token: `demo-admin-token-${admin.id}` };
+function normalizeAdmin(raw) {
+  if (!raw) return null;
+  return {
+    id: raw.id,
+    name: raw.name,
+    email: raw.email,
+    phone: raw.phone,
+    avatar: raw.avatar,
+  };
+}
+
+function persistSession(session) {
+  writeStorage(STORAGE_KEYS.ADMIN_AUTH, session);
+  return session;
+}
+
+// Reads the current token and safely tries to fetch + persist the admin
+// profile from /admin/me. Returns null when there is no token or the request
+// fails - it NEVER clears the stored session (callers decide on 401).
+async function fetchAdminProfile() {
+  const stored = readStorage(STORAGE_KEYS.ADMIN_AUTH, null);
+  if (!stored?.token) return null;
+  const res = await adminApi.get("/admin/me");
+  const data = unwrap(res);
+  const session = { token: stored.token, admin: normalizeAdmin(data?.admin ?? data) };
+  return persistSession(session);
 }
 
 export const adminAuthService = {
-  // Future Laravel endpoint: POST /api/admin/login
+  // POST /api/admin/auth/login
   login: async ({ email, password }) => {
-    const admin = adminUserSeed.find((a) => a.email.toLowerCase() === email.toLowerCase());
-    if (!admin || admin.password !== password) {
-      return fail("Incorrect email or password.");
+    const res = await adminApi.post("/admin/auth/login", { email, password });
+    const data = unwrap(res);
+    const token = data?.token ?? data?.access_token ?? null;
+    if (!token) throw new Error("Login succeeded but no token was returned.");
+    // Persist the token immediately so authentication always succeeds, then
+    // best-effort enrich the session with the real admin profile from /me.
+    const session = persistSession({ token, admin: null });
+    try {
+      const fresh = await fetchAdminProfile();
+      if (fresh) return fresh;
+    } catch {
+      // ignore - the token-only session is enough to stay authenticated. A 401
+      // here must NOT delete the freshly-issued token.
     }
-    const session = toSession(admin);
-    writeStorage(STORAGE_KEYS.ADMIN_USER, session);
-    return delay(session);
+    return session;
   },
 
-  // Future Laravel endpoint: POST /api/admin/logout
+  // POST /api/admin/auth/logout - always clear the local session even if the
+  // request fails.
   logout: async () => {
-    removeStorage(STORAGE_KEYS.ADMIN_USER);
-    return delay(true);
+    try {
+      await adminApi.post("/admin/auth/logout");
+    } catch {
+      // keep clearing locally
+    } finally {
+      removeStorage(STORAGE_KEYS.ADMIN_AUTH);
+    }
+    return true;
   },
 
-  // Future Laravel endpoint: GET /api/admin/user
-  getCurrentAdmin: async () => delay(readStorage(STORAGE_KEYS.ADMIN_USER, null)),
+  // GET /api/admin/me - re-validates the stored token and refreshes admin data.
+  //
+  // Returns:
+  //   { session, invalid: false } - token accepted, admin profile refreshed
+  //   { session: null, invalid: false } - transient failure (network / 5xx);
+  //     the stored session is KEPT so a momentary blip does not log the
+  //     admin out on refresh
+  //   { session: null, invalid: true } - 401: the token was rejected, so the
+  //     stored session is CLEARED (caller must also clear the auth state)
+  me: async () => {
+    try {
+      return { session: await fetchAdminProfile(), invalid: false };
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        removeStorage(STORAGE_KEYS.ADMIN_AUTH);
+        return { session: null, invalid: true };
+      }
+      return { session: null, invalid: false };
+    }
+  },
 
-  // Future Laravel endpoint: PUT /api/admin/profile
+  // Reads the persisted admin session (no network round-trip).
+  getCurrentAdmin: async () => readStorage(STORAGE_KEYS.ADMIN_AUTH, null),
+
+  // Local profile passthrough until a dedicated backend endpoint exists.
   updateProfile: async (updates) => {
-    const current = readStorage(STORAGE_KEYS.ADMIN_USER, null);
-    if (!current) return fail("Not authenticated.");
-    const updated = { ...current, ...updates };
-    writeStorage(STORAGE_KEYS.ADMIN_USER, updated);
-    return delay(updated);
+    const stored = readStorage(STORAGE_KEYS.ADMIN_AUTH, null);
+    if (!stored) throw new Error("Not authenticated.");
+    const session = { ...stored, admin: normalizeAdmin({ ...stored.admin, ...updates }) };
+    return persistSession(session);
   },
 };
