@@ -18,7 +18,6 @@ export default function ProductCard({ product, variant, featured = false }) {
   const { addItem } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isAuthenticated } = useAuth();
-
   const favorite = isFavorite(product.id);
   const hasSizes = Boolean(product.sizes?.length);
   const displayPrice = hasSizes ? product.sizes[0].price : product.price;
