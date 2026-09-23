@@ -147,12 +147,12 @@ export default function Navbar() {
           <Link to="/" className="flex shrink-0 items-center gap-3">
             <img
               src={logo}
-              alt="Peak Burger"
+              alt="Mount Burger"
               className="h-10 w-10 rounded-full object-cover ring-2 ring-white/20"
             />
             <div className="hidden leading-none sm:block">
               <span className="block font-display text-lg font-extrabold tracking-tight text-white">
-                Peak Burger
+                Mount Burger
               </span>
               <span className="mt-0.5 block text-[11px] font-semibold text-primary">
                 {lang === "ar" ? "شواء طازة كل يوم" : "Flame-grilled daily"}
@@ -283,8 +283,8 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-between bg-ink-deep px-6 py-5">
             <div className="flex items-center gap-2.5">
-              <img src={logo} alt="Peak Burger" className="h-10 w-10 rounded-full object-cover ring-2 ring-cream/20" />
-              <span className="font-display text-base font-extrabold text-cream">Peak Burger</span>
+              <img src={logo} alt="Mount Burger" className="h-10 w-10 rounded-full object-cover ring-2 ring-cream/20" />
+              <span className="font-display text-base font-extrabold text-cream">Mount Burger</span>
             </div>
             <button
               onClick={() => setDrawerOpen(false)}

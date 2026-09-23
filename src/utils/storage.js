@@ -17,7 +17,7 @@ export const STORAGE_KEYS = {
   REVIEWS: "peakburger_reviews",
   PAYMENTS: "peakburger_payments",
   ORDER_STATUS_HISTORY: "peakburger_order_status_history",
-  ADMIN_USER: "peakburger_admin_user",
+  ADMIN_AUTH: "peakburger_admin_auth",
 };
 
 export function readStorage(key, fallback) {

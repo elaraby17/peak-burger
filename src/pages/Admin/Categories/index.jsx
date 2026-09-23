@@ -27,7 +27,7 @@ export default function AdminCategories() {
 
   const handleSubmit = async (payload) => {
     setIsSaving(true);
-    if (editing?.id) await categoryService.update(editing.id, payload);
+    if (editing?.id) await categoryService.update(editing.numericId, payload);
     else await categoryService.create(payload);
     setIsSaving(false);
     setEditing(null);
@@ -43,13 +43,13 @@ export default function AdminCategories() {
       cancelText: lang === "ar" ? "إلغاء" : "Cancel",
     });
     if (!confirmed) return;
-    await categoryService.remove(c.id);
+    await categoryService.remove(c.numericId);
     await load();
     toastSuccess(lang === "ar" ? "تم الحذف." : "Deleted.");
   };
 
   const handleToggle = async (c) => {
-    await categoryService.toggleActive(c.id);
+    await categoryService.toggleActive(c);
     await load();
   };
 

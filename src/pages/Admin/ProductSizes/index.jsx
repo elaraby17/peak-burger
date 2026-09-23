@@ -29,7 +29,7 @@ export default function AdminProductSizes() {
     setError(null);
     setSizes(null);
     sizeService
-      .getAll()
+      .getAllAdmin()
       .then(setSizes)
       .catch((err) => {
         console.error("Failed to load product sizes", err);

@@ -67,7 +67,7 @@ export default function AdminProducts() {
   };
 
   const handleToggle = async (p) => {
-    await productService.toggleActive(p.id);
+    await productService.toggleActive(p);
     await load();
   };
 

@@ -1,4 +1,4 @@
-import api from "./api";
+import { adminApi } from "./api";
 
 // Backed by the real Laravel admin API. Assumes the backend already joins
 // order stats server-side (orders_count, total_spent) rather than the client
@@ -44,7 +44,7 @@ export const customerService = {
     // GET /api/admin/customers
     // Optional params: { q, status } for search/filtering.
     getAll: (params = {}) =>
-        api
+        adminApi
             .get("/admin/customers", { params })
             .then(unwrap)
             .then((rows) => rows.map(normalizeCustomer)),
@@ -54,7 +54,7 @@ export const customerService = {
     // adjust the destructure below if Laravel nests it differently
     // (e.g. under `recent_orders` or requires a separate call).
     getById: (id) =>
-        api
+        adminApi
             .get(`/admin/customers/${id}`)
             .then(unwrap)
             .then((raw) => {
@@ -73,16 +73,16 @@ export const customerService = {
     // For admin-created accounts (walk-in customers, manual entry, etc).
     // TODO: confirm whether Laravel requires a password on admin-created
     // accounts or issues an invite/reset-link flow instead.
-    create: (payload) => api.post("/admin/customers", buildCustomerPayload(payload)).then(unwrap).then(normalizeCustomer),
+    create: (payload) => adminApi.post("/admin/customers", buildCustomerPayload(payload)).then(unwrap).then(normalizeCustomer),
 
     // PUT /api/admin/customers/{id}
-    update: (id, payload) => api.put(`/admin/customers/${id}`, buildCustomerPayload(payload)).then(unwrap).then(normalizeCustomer),
+    update: (id, payload) => adminApi.put(`/admin/customers/${id}`, buildCustomerPayload(payload)).then(unwrap).then(normalizeCustomer),
 
     // DELETE /api/admin/customers/{id}
-    remove: (id) => api.delete(`/admin/customers/${id}`).then(() => true),
+    remove: (id) => adminApi.delete(`/admin/customers/${id}`).then(() => true),
 
     // PATCH /api/admin/customers/{id}/status
     // No confirmed route yet — included as a likely admin action (block/unblock
     // a customer). Remove or adjust once the real route is confirmed.
-    updateStatus: (id, status) => api.patch(`/admin/customers/${id}/status`, { status }).then(unwrap).then(normalizeCustomer),
+    updateStatus: (id, status) => adminApi.patch(`/admin/customers/${id}/status`, { status }).then(unwrap).then(normalizeCustomer),
 };

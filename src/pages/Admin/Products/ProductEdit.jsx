@@ -18,7 +18,7 @@ export default function ProductEdit() {
 
   useEffect(() => {
     document.title = "Edit product — Peak Burger Admin";
-    productService.getById(id).then(setProduct);
+    productService.getByIdAdmin(id).then(setProduct);
     categoryService.getAll().then(setCategories);
   }, [id]);
 

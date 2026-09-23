@@ -20,7 +20,7 @@ export default function AdminSauces() {
   const [assignFor, setAssignFor] = useState(null); // sauce being assigned to products
 
   const load = () => {
-    sauceService.getAll().then(setSauces);
+    sauceService.getAllAdmin().then(setSauces);
     productService.getAllAdmin().then(setProducts);
   };
 

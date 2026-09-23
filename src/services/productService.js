@@ -1,6 +1,7 @@
 // src/services/productService.js
 
 // SINGLE frontend entry point for the Product API.
+//
 // Laravel Peak Burger backend:
 // - GET    /api/products
 // - GET    /api/products/popular
@@ -9,7 +10,7 @@
 // - POST   /api/products/{id} with _method=PUT
 // - DELETE /api/products/{id}
 
-import api from "./api";
+import api, { adminApi } from "./api";
 
 /**
  * Unwrap Laravel ApiResponseTrait responses.
@@ -61,14 +62,21 @@ function unwrap(res) {
 }
 
 /**
- * Log the actual API error and rethrow it.
+ * Rethrow the actual API error.
+ *
+ * The component is responsible for displaying
+ * the error to the user.
+ *
+ * Example:
+ *
+ * try {
+ *     await productService.create(payload);
+ * } catch (error) {
+ *     // Show error with alert / SweetAlert in component
+ * }
  */
-function logAndRethrow(label) {
-    return (err) => {
-        console.error(`[productService] ${label} failed:`, err?.response?.status, err?.response?.data ?? err?.message);
-
-        throw err;
-    };
+function rethrowError(err) {
+    throw err;
 }
 
 /**
@@ -84,6 +92,7 @@ function normalizeProduct(raw) {
 
     return {
         id: raw.id,
+
         slug: raw.slug,
 
         name: raw.name ?? {
@@ -135,8 +144,6 @@ function normalizeProduct(raw) {
  */
 function normalizeProducts(rows) {
     if (!Array.isArray(rows)) {
-        console.warn("[productService] Expected product array but received:", rows);
-
         return [];
     }
 
@@ -146,20 +153,28 @@ function normalizeProducts(rows) {
 /**
  * Build multipart FormData for product create/update.
  */
-function buildProductFormData(payload) {
+function buildProductFormData(payload = {}) {
     const fd = new FormData();
 
-    fd.append("category_id", payload.categoryId);
-    fd.append("name_en", payload.nameEn);
-    fd.append("name_ar", payload.nameAr);
-    fd.append("description_en", payload.descriptionEn ?? "");
-    fd.append("description_ar", payload.descriptionAr ?? "");
-    fd.append("price", payload.price);
-    fd.append("active", payload.active ? 1 : 0);
-    fd.append("popular", payload.popular ? 1 : 0);
-    fd.append("is_new", payload.isNew ? 1 : 0);
+    fd.append("category_id", payload.categoryId ?? "");
 
-    if (payload.imageFile) {
+    fd.append("name_en", payload.nameEn ?? "");
+
+    fd.append("name_ar", payload.nameAr ?? "");
+
+    fd.append("description_en", payload.descriptionEn ?? "");
+
+    fd.append("description_ar", payload.descriptionAr ?? "");
+
+    fd.append("price", payload.price ?? "");
+
+    fd.append("active", payload.active ? "1" : "0");
+
+    fd.append("popular", payload.popular ? "1" : "0");
+
+    fd.append("is_new", payload.isNew ? "1" : "0");
+
+    if (payload.imageFile instanceof File) {
         fd.append("image", payload.imageFile);
     }
 
@@ -170,31 +185,21 @@ export const productService = {
     /**
      * GET /api/products
      */
-    getAll: () => api.get("/products").then(unwrap).then(normalizeProducts).catch(logAndRethrow("getAll")),
+    getAll: () => api.get("user/products").then(unwrap).then(normalizeProducts).catch(rethrowError),
 
     /**
      * GET /api/products/popular
      *
      * Backend already filters popular products.
      */
-    getPopular: () =>
-        api
-            .get("/products/popular")
-            .then(unwrap)
-            .then(normalizeProducts)
-            .then((products) => {
-                console.log("[productService] Popular products:", products);
-
-                return products;
-            })
-            .catch(logAndRethrow("getPopular")),
+    getPopular: () => api.get("user/products/popular").then(unwrap).then(normalizeProducts).catch(rethrowError),
 
     /**
      * GET /api/products/{id}
      */
     getById: (id) =>
         api
-            .get(`/products/${id}`)
+            .get(`user/products/${id}`)
             .then(unwrap)
             .then((data) => {
                 if (Array.isArray(data)) {
@@ -208,55 +213,71 @@ export const productService = {
                     return null;
                 }
 
-                return logAndRethrow("getById")(err);
+                return rethrowError(err);
             }),
 
     /**
-     * Admin uses the same products endpoint.
+     * Admin listing - GET /api/admin/products (adminApi + admin token).
      */
-    getAllAdmin: () => api.get("/products").then(unwrap).then(normalizeProducts).catch(logAndRethrow("getAllAdmin")),
+    getAllAdmin: () => adminApi.get("admin/products").then(unwrap).then(normalizeProducts).catch(rethrowError),
 
     /**
-     * Create product.
+     * Admin read - GET /api/admin/products/{id} (adminApi + admin token).
+     */
+    getByIdAdmin: (id) =>
+        adminApi
+            .get(`admin/products/${id}`)
+            .then(unwrap)
+            .then(normalizeProduct)
+            .catch((err) => {
+                if (err?.response?.status === 404) {
+                    return null;
+                }
+
+                return rethrowError(err);
+            }),
+
+    /**
+     * Create product - POST /api/admin/products (admin token).
      */
     create: (payload) =>
-        api
-            .post("/products", buildProductFormData(payload), {
+        adminApi
+            .post("admin/products", buildProductFormData(payload), {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
             .then(unwrap)
             .then(normalizeProduct)
-            .catch(logAndRethrow("create")),
+            .catch(rethrowError),
 
     /**
-     * Update product.
+     * Update product - PUT /api/admin/products/{id} (admin token).
      */
     update: (id, payload) => {
         const fd = buildProductFormData(payload);
 
         fd.append("_method", "PUT");
 
-        return api
-            .post(`/products/${id}`, fd, {
+        return adminApi
+            .post(`admin/products/${id}`, fd, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
             .then(unwrap)
             .then(normalizeProduct)
-            .catch(logAndRethrow("update"));
+            .catch(rethrowError);
     },
 
     /**
-     * Delete product.
+     * Delete product - DELETE /api/admin/products/{id} (admin token).
      */
     remove: (id) =>
-        api
-            .delete(`/products/${id}`)
+        adminApi
+            .delete(`admin/products/${id}`)
             .then(() => true)
-            .catch(logAndRethrow("remove")),
+            .catch(rethrowError),
 
     /**
      * Toggle product active status.
@@ -264,13 +285,21 @@ export const productService = {
     toggleActive: (product) =>
         productService.update(product.id, {
             categoryId: product.categoryId,
+
             nameEn: product.name?.en ?? "",
+
             nameAr: product.name?.ar ?? "",
+
             descriptionEn: product.description?.en ?? "",
+
             descriptionAr: product.description?.ar ?? "",
+
             price: product.price,
+
             popular: product.popular,
+
             isNew: product.isNew,
+
             active: product.active === false,
         }),
 };

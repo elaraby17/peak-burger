@@ -27,7 +27,7 @@ function persistSession(session) {
 }
 
 export const authService = {
-    // POST /api/auth/register
+    // POST /api/user/auth/register
     register: ({ name, email, phone, password, avatarFile }) => {
         const fd = new FormData();
         fd.append("name", name);
@@ -41,34 +41,34 @@ export const authService = {
         if (avatarFile) fd.append("avatar", avatarFile);
 
         return api
-            .post("/auth/register", fd)
+            .post("/user/auth/register", fd)
             .then(unwrap)
             .then(({ user, token }) => persistSession({ ...normalizeUser(user), token }));
     },
 
-    // POST /api/auth/login
+    // POST /api/user/auth/login
     login: ({ email, password }) =>
         api
-            .post("/auth/login", { email, password })
+            .post("/user/auth/login", { email, password })
             .then(unwrap)
             .then(({ user, token }) => persistSession({ ...normalizeUser(user), token })),
 
-    // POST /api/auth/logout
+    // POST /api/user/logout
     logout: () =>
         api
-            .post("/auth/logout")
+            .post("/user/logout")
             .catch(() => {}) // still clear the local session even if the request fails
             .then(() => {
                 removeStorage(STORAGE_KEYS.USER);
                 return true;
             }),
 
-    // GET /api/auth/user - re-validates the stored token and refreshes profile fields
+    // GET /api/user/user - re-validates the stored token and refreshes profile fields
     getCurrentUser: () => {
         const stored = readStorage(STORAGE_KEYS.USER, null);
         if (!stored?.token) return Promise.resolve(null);
         return api
-            .get("/auth/user")
+            .get("/user/profile")
             .then(unwrap)
             .then((user) => persistSession({ ...normalizeUser(user), token: stored.token }))
             .catch(() => {
@@ -77,11 +77,11 @@ export const authService = {
             });
     },
 
-    // PUT /api/auth/profile - not built on the backend yet, wire up once it exists
+    // PUT /api/user/profile (AuthController@profileEdit)
     updateProfile: (updates) => {
         const stored = readStorage(STORAGE_KEYS.USER, null);
         return api
-            .put("/auth/profile", updates)
+            .put("/user/profile", updates)
             .then(unwrap)
             .then((user) => persistSession({ ...normalizeUser(user), token: stored?.token }));
     },
