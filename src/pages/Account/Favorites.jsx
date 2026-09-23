@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { useFavorites } from "../../context/FavoritesContext";
-import { products } from "../../data/products";
 import ProductCard from "../../components/product/ProductCard";
 import EmptyState from "../../components/ui/EmptyState";
 import { ProductGridSkeleton } from "../../components/ui/Skeleton";
+import productService from "../../services/productService";
 
 export default function Favorites() {
   const { lang } = useLanguage();
-  const { favorites } = useFavorites();
+  // const { favorites } = useFavorites();
+  const [products, setProducts] = useState([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -20,6 +21,9 @@ export default function Favorites() {
     return () => clearTimeout(timeout);
   }, []);
 
+  useEffect(() => {
+  productService.getAll().then(setProducts);
+}, []);
   const favoriteProducts = products.filter((p) => favorites.includes(p.id));
 
   return (

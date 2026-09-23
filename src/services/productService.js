@@ -1,49 +1,151 @@
-// src/services/productService.js — استبدل بالكامل
+
+
 import api from "./api";
 
-// Backed by the real Laravel API (see ProductController / StoreProductRequest
-// you shared). Laravel expects category_id (numeric), name_en/name_ar as
-// separate flat fields, is_new (snake_case), and a real uploaded file for
-// image (multipart/form-data) - not the nested {en,ar} / URL-string shape
-// the rest of the app uses. Everything below adapts between the two shapes
-// so ProductForm.jsx and every other component keep working unchanged.
 
-function normalizeProduct(raw) {
-    if (!raw) return null;
-    return {
-        id: raw.id,
-        slug: raw.slug,
-        name: raw.name,
-        description: raw.description,
-        // Frontend filters/links use the category *slug* as a string id.
-        category: raw.category?.slug ?? raw.category,
-        // Kept so we can send category_id back on update (Laravel needs the
-        // numeric id, not the slug).
-        categoryId: raw.category?.id ?? raw.category_id ?? null,
-        price: raw.price !== null && raw.price !== undefined ? Number(raw.price) : null,
-        image: raw.image,
-        active: Boolean(Number(raw.active ?? 1)),
-        popular: Boolean(Number(raw.popular ?? 0)),
-        isNew: Boolean(Number(raw.is_new ?? 0)),
-        sizes: raw.sizes
-            ? raw.sizes.map((s) => ({
-                  id: s.size_key ?? s.id,
-                  label: s.label ?? { en: s.label_en, ar: s.label_ar },
-                  price: Number(s.price),
-              }))
-            : undefined,
-        sauceOptions: raw.sauce_options ?? raw.sauceOptions ?? undefined,
-        ingredients: raw.ingredients ?? { en: [], ar: [] },
+function unwrap(res) {
+    const payload = res?.data;
+
+    if (!payload) {
+        return [];
+    }
+
+    // Normal API response
+    if (Array.isArray(payload.data)) {
+        return payload.data;
+    }
+
+    // Paginated API response
+    if (
+        payload.data &&
+        typeof payload.data === "object" &&
+        Array.isArray(payload.data.data)
+    ) {
+        return payload.data.data;
+    }
+
+    // Some endpoints may return an array directly
+    if (Array.isArray(payload)) {
+        return payload;
+    }
+
+    return [];
+}
+
+/**
+ * Log API errors and rethrow them.
+ */
+function logAndRethrow(label) {
+    return (err) => {
+        console.error(
+            `[productService] ${label} failed:`,
+            err?.response?.status,
+            err?.response?.data ?? err?.message
+        );
+
+        throw err;
     };
 }
 
-const unwrap = (res) => res.data.data;
+/**
+ * Normalize a single product from Laravel API
+ * into the frontend Product shape.
+ */
+function normalizeProduct(raw) {
+    if (!raw || typeof raw !== "object") {
+        return null;
+    }
 
-// payload here is the shape ProductForm.jsx builds (see the updated form):
-// { categoryId, nameEn, nameAr, descriptionEn, descriptionAr, price,
-//   popular, isNew, active, imageFile }
+    const rawSizes = Array.isArray(raw.sizes) ? raw.sizes : [];
+
+    return {
+        id: raw.id,
+        slug: raw.slug,
+
+        name: raw.name ?? {
+            en: raw.name_en ?? "",
+            ar: raw.name_ar ?? "",
+        },
+
+        description: raw.description ?? {
+            en: raw.description_en ?? "",
+            ar: raw.description_ar ?? "",
+        },
+
+        category:
+            raw.category?.slug ??
+            raw.category ??
+            raw.category_slug ??
+            null,
+
+        categoryId:
+            raw.category?.id ??
+            raw.category_id ??
+            null,
+
+        price:
+            raw.price !== null && raw.price !== undefined
+                ? Number(raw.price)
+                : null,
+
+        image: raw.image ?? null,
+
+        active: Boolean(Number(raw.active ?? 1)),
+
+        popular: Boolean(Number(raw.popular ?? 0)),
+
+        isNew: Boolean(Number(raw.is_new ?? raw.isNew ?? 0)),
+
+        sizes: rawSizes.map((size) => ({
+            id: size.size_key ?? size.id ?? null,
+
+            label: size.label ?? {
+                en: size.label_en ?? "",
+                ar: size.label_ar ?? "",
+            },
+
+            price:
+                size.price !== null && size.price !== undefined
+                    ? Number(size.price)
+                    : 0,
+        })),
+
+        sauceOptions:
+            raw.sauce_options ??
+            raw.sauceOptions ??
+            undefined,
+
+        ingredients: raw.ingredients ?? {
+            en: [],
+            ar: [],
+        },
+    };
+}
+
+/**
+ * Normalize an array of products safely.
+ */
+function normalizeProducts(rows) {
+    if (!Array.isArray(rows)) {
+        console.warn(
+            "[productService] Expected product array but received:",
+            rows
+        );
+
+        return [];
+    }
+
+    return rows
+        .map(normalizeProduct)
+        .filter(Boolean);
+}
+
+/**
+ * Build multipart FormData for product create/update.
+ */
 function buildProductFormData(payload) {
     const fd = new FormData();
+
     fd.append("category_id", payload.categoryId);
     fd.append("name_en", payload.nameEn);
     fd.append("name_ar", payload.nameAr);
@@ -53,98 +155,147 @@ function buildProductFormData(payload) {
     fd.append("active", payload.active ? 1 : 0);
     fd.append("popular", payload.popular ? 1 : 0);
     fd.append("is_new", payload.isNew ? 1 : 0);
-    if (payload.imageFile) fd.append("image", payload.imageFile);
+
+    if (payload.imageFile) {
+        fd.append("image", payload.imageFile);
+    }
+
     return fd;
 }
 
 export const productService = {
-    // GET /api/products
+    // GET all products
     getAll: () =>
         api
             .get("/products")
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct)),
+            .then(normalizeProducts)
+            .catch(logAndRethrow("getAll")),
 
-    // GET /api/products/{idOrSlug}
+    // GET popular products
+    getPopular: () =>
+        api
+            .get("/products/popular")
+            .then(unwrap)
+            .then(normalizeProducts)
+            .then((products) => {
+                console.log(
+                    "[productService] Popular products:",
+                    products
+                );
+
+                return products;
+            })
+            .catch(logAndRethrow("getPopular")),
+
+    // GET product by ID or slug
     getById: (idOrSlug) =>
         api
             .get(`/products/${idOrSlug}`)
             .then(unwrap)
-            .then(normalizeProduct)
+            .then((data) => {
+                if (Array.isArray(data)) {
+                    return normalizeProduct(data[0]);
+                }
+
+                return normalizeProduct(data);
+            })
             .catch((err) => {
-                if (err.response?.status === 404) return null;
-                throw err;
+                if (err?.response?.status === 404) {
+                    return null;
+                }
+
+                return logAndRethrow("getById")(err);
             }),
 
-    // GET /api/categories/{categoryId}/products
+    // GET products by category
     getByCategory: (categoryId) =>
         api
             .get(`/categories/${categoryId}/products`)
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct)),
+            .then(normalizeProducts)
+            .catch(logAndRethrow("getByCategory")),
 
-    // GET /api/products?popular=1
-    getPopular: () =>
-        api
-            .get("/products", { params: { popular: 1 } })
-            .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct))
-            .then((rows) => rows.filter((p) => p.popular)),
-
-    // GET /api/products?q=
+    // Search products
     search: (query) => {
         const q = query.trim();
-        if (!q) return Promise.resolve([]);
+
+        if (!q) {
+            return Promise.resolve([]);
+        }
+
         return api
-            .get("/products", { params: { q } })
+            .get("/products", {
+                params: { q },
+            })
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct));
+            .then(normalizeProducts)
+            .catch(logAndRethrow("search"));
     },
 
-    // ---- Admin CRUD ----
+     //-------- Admin CRUD --------------//
 
-    // GET /api/admin/products (or /api/products if you haven't split admin routes yet)
+    //  get all products
     getAllAdmin: () =>
         api
             .get("/products")
             .then(unwrap)
-            .then((rows) => rows.map(normalizeProduct)),
+            .then(normalizeProducts)
+            .catch(logAndRethrow("getAllAdmin")),
 
-    // POST /api/products  (multipart/form-data - image is a real file)
+    // Create product
     create: (payload) =>
         api
-            .post("/products", buildProductFormData(payload), { headers: { "Content-Type": "multipart/form-data" } })
+            .post(
+                "/products",
+                buildProductFormData(payload),
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            )
             .then(unwrap)
-            .then(normalizeProduct),
+            .then(normalizeProduct)
+            .catch(logAndRethrow("create")),
 
-    // POST /api/products/{id} + _method=PUT  (Laravel method-spoofing: PHP
-    // can't parse multipart bodies on native PUT requests)
+    // Update product
     update: (id, payload) => {
         const fd = buildProductFormData(payload);
+
         fd.append("_method", "PUT");
+
         return api
-            .post(`/products/${id}`, fd, { headers: { "Content-Type": "multipart/form-data" } })
+            .post(`/products/${id}`, fd, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
             .then(unwrap)
-            .then(normalizeProduct);
+            .then(normalizeProduct)
+            .catch(logAndRethrow("update"));
     },
 
-    // DELETE /api/products/{id}
-    remove: (id) => api.delete(`/products/${id}`).then(() => true),
+    // Delete product
+    remove: (id) =>
+        api
+            .delete(`/products/${id}`)
+            .then(() => true)
+            .catch(logAndRethrow("remove")),
 
-    // No dedicated toggle-active route on the backend yet - reuses update()
-    // with the product's current fields plus a flipped `active`, so it works
-    // with today's controller (add a PATCH /toggle-active route later if you
-    // want a lighter-weight call).
+    // Toggle product active status
     toggleActive: (product) =>
         productService.update(product.id, {
             categoryId: product.categoryId,
-            nameEn: product.name.en,
-            nameAr: product.name.ar,
-            descriptionEn: product.description?.en,
-            descriptionAr: product.description?.ar,
+            nameEn: product.name?.en ?? "",
+            nameAr: product.name?.ar ?? "",
+            descriptionEn: product.description?.en ?? "",
+            descriptionAr: product.description?.ar ?? "",
             price: product.price,
             popular: product.popular,
             isNew: product.isNew,
-            active: !(product.active !== false),
+            active: product.active === false,
         }),
 };
+
+export default productService;

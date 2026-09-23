@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useFavorites } from "../../context/FavoritesContext";
 import { orderService } from "../../services/orderService";
 import { useCart } from "../../context/CartContext";
-import { getProductBySlugOrId } from "../../data/products";
+import productService from "../../services/productService";
 import Price from "../../components/ui/Price";
 import Badge from "../../components/ui/Badge";
 import { DashboardSkeleton } from "../../components/ui/Skeleton";
@@ -40,14 +40,36 @@ export default function AccountOverview() {
 
   const recentOrders = orders.slice(0, 3);
 
-  const reorder = (order) => {
-    order.items?.forEach((item) => {
-      const product = getProductBySlugOrId(item.productId);
-      if (product) addItem(product, { size: item.size, sauce: item.sauce, quantity: item.quantity });
-    });
-    toastSuccess(lang === "ar" ? "تمت إضافة الطلب للسلة!" : "Order added to cart!");
-  };
+  // const reorder = (order) => {
+  //   order.items?.forEach((item) => {
+  //     const product = getProductBySlugOrId(item.productId);
+  //     if (product) addItem(product, { size: item.size, sauce: item.sauce, quantity: item.quantity });
+  //   });
+  //   toastSuccess(lang === "ar" ? "تمت إضافة الطلب للسلة!" : "Order added to cart!");
+  // };
+const reorder = async (order) => {
+  try {
+    for (const item of order.items ?? []) {
+      const product = await productService.getById(item.productId);
 
+      if (product) {
+        addItem(product, {
+          size: item.size,
+          sauce: item.sauce,
+          quantity: item.quantity,
+        });
+      }
+    }
+
+    toastSuccess(
+      lang === "ar"
+        ? "تمت إضافة الطلب للسلة!"
+        : "Order added to cart!"
+    );
+  } catch (error) {
+    console.error("Failed to reorder:", error);
+  }
+};
   return (
     <div className="space-y-8">
       <div>
