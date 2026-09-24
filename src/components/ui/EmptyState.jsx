@@ -13,13 +13,13 @@ export default function EmptyState({ icon: Icon, title, description, actionLabel
       {description && <p className="max-w-sm text-sm text-text-muted">{description}</p>}
       {actionLabel && actionTo && (
         <Link to={actionTo} className="mt-2">
-          <Button variant="primary" size="md">
+          <Button variant="gold" size="md">
             {actionLabel}
           </Button>
         </Link>
       )}
       {actionLabel && onAction && !actionTo && (
-        <Button onClick={onAction} variant="primary" size="md" className="mt-2">
+        <Button onClick={onAction} variant="gold" size="md" className="mt-2">
           {actionLabel}
         </Button>
       )}

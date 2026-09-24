@@ -163,12 +163,14 @@ export default function Checkout() {
                 type="button"
                 onClick={() => setPayment("cod")}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl border-2 p-4 text-start",
-                  payment === "cod" ? "border-secondary bg-secondary/5" : "border-line"
+                  "flex items-center gap-3 rounded-xl border-2 p-4 text-start transition-colors",
+                  payment === "cod" ? "border-primary bg-primary/5" : "border-line hover:border-white/20"
                 )}
               >
-                <Banknote className="h-5 w-5 text-secondary" />
-                <span className="font-semibold text-text">{lang === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery"}</span>
+                <Banknote className={cn("h-5 w-5", payment === "cod" ? "text-primary" : "text-text-muted")} />
+                <span className={cn("font-semibold", payment === "cod" ? "text-text" : "text-text-muted")}>
+                  {lang === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery"}
+                </span>
               </button>
               <button type="button" disabled className="flex cursor-not-allowed items-center gap-3 rounded-xl border-2 border-line p-4 text-start opacity-50">
                 <Smartphone className="h-5 w-5 text-text-muted" />
@@ -199,14 +201,14 @@ export default function Checkout() {
             </div>
             <div className="mt-1 flex justify-between text-text-muted">
               <span>{lang === "ar" ? "التوصيل" : "Delivery"}</span>
-              {deliveryFee === 0 ? <span className="font-bold text-secondary">{lang === "ar" ? "مجاني" : "Free"}</span> : <Price value={deliveryFee} className="text-text" />}
+              {deliveryFee === 0 ? <span className="font-bold text-primary">{lang === "ar" ? "مجاني" : "Free"}</span> : <Price value={deliveryFee} className="text-text" />}
             </div>
           </div>
           <div className="flex justify-between border-t border-line pt-3 font-display text-lg font-bold text-text">
             <span>{lang === "ar" ? "الإجمالي" : "Total"}</span>
-            <Price value={total} />
+            <Price value={total} className="text-primary" />
           </div>
-          <Button type="submit" variant="primary" size="lg" isLoading={isSubmitting} className="w-full">
+          <Button type="submit" variant="gold" size="lg" isLoading={isSubmitting} className="w-full">
             {lang === "ar" ? "تأكيد الطلب" : "Place Order"}
           </Button>
         </div>

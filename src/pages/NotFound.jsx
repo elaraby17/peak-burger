@@ -20,7 +20,7 @@ export default function NotFound() {
         {lang === "ar" ? "يمكن الرابط غلط أو الصفحة اتشالت." : "The page you're looking for doesn't exist."}
       </p>
       <Link to="/" className="mt-6">
-        <Button variant="primary" size="lg">
+        <Button variant="gold" size="lg">
           {lang === "ar" ? "الرجوع للرئيسية" : "Back to home"}
         </Button>
       </Link>

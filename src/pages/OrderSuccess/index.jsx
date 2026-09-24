@@ -63,8 +63,8 @@ export default function OrderSuccess() {
       </div>
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-        <Link to={`/account/orders/${order.id}`}>
-          <Button variant="primary" size="lg" className="w-full sm:w-auto">
+        <Link to={`/account/orders/${order.id}/track`}>
+          <Button variant="gold" size="lg" className="w-full sm:w-auto">
             {lang === "ar" ? "تتبع الطلب" : "Track Order"}
           </Button>
         </Link>

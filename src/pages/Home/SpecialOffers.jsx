@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { offers } from "../../data/offers";
 import Price from "../../components/ui/Price";
+import Button from "../../components/ui/Button";
 import fallbackImage from "../../assets/hero/classic-combo.jpg";
 
 const discountPercent = (offer) =>
@@ -108,13 +109,13 @@ export default function SpecialOffers() {
             <div
               className={`mt-9 flex flex-wrap items-center gap-x-6 gap-y-4 ${inView ? "animate-slideUp [animation-delay:180ms]" : "opacity-0"}`}
             >
-              <Link
-                to="/menu"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F5B400] px-8 py-4 font-display text-base font-bold tracking-wide text-[#050505] shadow-[0_10px_28px_rgba(245,180,0,0.22)] transition-all duration-200 hover:bg-[#E2A400] hover:shadow-[0_12px_32px_rgba(245,180,0,0.3)] active:scale-[0.98]"
+              <Button
+                variant="primary"
               >
                 {isAr ? "اطلب الآن" : "Order Now"}
                 <ArrowRight className={`h-4 w-4 ${isAr ? "-scale-x-100" : ""}`} />
-              </Link>
+            
+              </Button>
 
               <div className="flex items-baseline gap-3">
                 {Number(featured.offerPrice) > 0 && (

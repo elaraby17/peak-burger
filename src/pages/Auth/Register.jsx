@@ -213,7 +213,7 @@ export default function Register() {
     <main className="min-h-screen bg-ink-deep px-4 py-6 font-display sm:px-6 lg:px-8">
       <div
         dir="ltr"
-        className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-7xl grid-cols-1 gap-5 lg:grid-cols-2"
+        className="grid min-h-[calc(100vh-3rem)] w-full grid-cols-1 gap-5 lg:grid-cols-2"
       >
         {/* =====================================================
             IMAGE CARD

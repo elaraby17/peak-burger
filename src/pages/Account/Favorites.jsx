@@ -4,12 +4,12 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useFavorites } from "../../context/FavoritesContext";
 import ProductCard from "../../components/product/ProductCard";
 import EmptyState from "../../components/ui/EmptyState";
-import { ProductGridSkeleton } from "../../components/ui/Skeleton";
+import { ProductCardSkeleton } from "../../components/ui/Skeleton";
 import productService from "../../services/productService";
 
 export default function Favorites() {
   const { lang } = useLanguage();
-  // const { favorites } = useFavorites();
+  const { favorites } = useFavorites();
   const [products, setProducts] = useState([]);
   const [ready, setReady] = useState(false);
 
@@ -22,31 +22,77 @@ export default function Favorites() {
   }, []);
 
   useEffect(() => {
-  productService.getAll().then(setProducts);
-}, []);
-  const favoriteProducts = products.filter((p) => favorites.includes(p.id));
+    productService.getAll().then(setProducts);
+  }, []);
+
+  const isAr = lang === "ar";
+  const favoriteProducts = products.filter((p) =>
+    favorites.some(
+      (favorite) => Number(favorite.product_id) === Number(p.id)
+    )
+  );
+  const count = favoriteProducts.length;
 
   return (
-    <div className="space-y-6">
-      <h1 className="font-display text-2xl font-extrabold text-text">{lang === "ar" ? "المفضلة" : "Favorites"}</h1>
+    <div className="relative overflow-hidden">
+      {/* subtle yellow glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(circle at 15% 0%, rgba(245,180,0,0.06), transparent 42%)" }}
+      />
 
-      {!ready ? (
-        <ProductGridSkeleton count={4} />
-      ) : favoriteProducts.length === 0 ? (
-        <EmptyState
-          icon={Heart}
-          title={lang === "ar" ? "مفيش حاجة في المفضلة" : "No favorites yet"}
-          description={lang === "ar" ? "دوس على القلب في أي صنف عشان تضيفه هنا." : "Tap the heart on any item to save it here."}
-          actionLabel={lang === "ar" ? "تصفح المنيو" : "Explore Menu"}
-          actionTo="/menu"
-        />
-      ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {favoriteProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      )}
+      <div className="relative space-y-10 sm:space-y-12">
+        {/* Page header */}
+        <header className="animate-fadeIn">
+          <p className="flex items-center gap-2.5 font-display text-xs font-bold uppercase tracking-[0.35em] text-[#F5B400] sm:text-sm rtl:tracking-normal">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#F5B400]" />
+            {isAr ? "أصنافك المحفوظة" : "Saved for you"}
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl">
+            {isAr ? "المفضلة" : "Favorites"}
+          </h1>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-[#A1A1A1] sm:text-lg">
+            {isAr
+              ? "كل الأطباق اللي حبيتها محفوظة هنا، جاهزة لما تقرر تطلبها."
+              : "Everything you've saved, ready whenever you're craving it."}
+          </p>
+        </header>
+
+        {!ready ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : favoriteProducts.length === 0 ? (
+          <EmptyState
+            icon={Heart}
+            title={isAr ? "مفيش حاجة في المفضلة" : "No favorites yet"}
+            description={isAr ? "دوس على القلب في أي صنف عشان تضيفه هنا." : "Tap the heart on any item to save it here."}
+            actionLabel={isAr ? "تصفح المنيو" : "Explore Menu"}
+            actionTo="/menu"
+          />
+        ) : (
+          <section>
+            <div className="flex items-center gap-3">
+              <h2 className="font-display text-xl font-extrabold text-white sm:text-2xl">
+                {isAr ? "الأصناف المحفوظة" : "Saved items"}
+              </h2>
+              <span aria-hidden="true" className="h-px flex-1 bg-white/[0.08]" />
+              <span className="shrink-0 text-sm font-bold text-[#F5B400]">
+                {count} {isAr ? "صنف" : "items"}
+              </span>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
+              {favoriteProducts.map((product) => (
+                <ProductCard key={product.id} product={product} variant="menu" />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

@@ -25,6 +25,7 @@ import ResetPassword from "../pages/Auth/ResetPassword";
 import AccountOverview from "../pages/Account/Overview";
 import Orders from "../pages/Account/Orders";
 import OrderDetail from "../pages/Account/OrderDetail";
+import OrderTrack from "../pages/Account/OrderTrack";
 import Favorites from "../pages/Account/Favorites";
 import Profile from "../pages/Account/Profile";
 import Settings from "../pages/Account/Settings";
@@ -80,6 +81,7 @@ export default function AppRoutes() {
             <Route index element={<AccountOverview />} />
             <Route path="orders" element={<Orders />} />
             <Route path="orders/:id" element={<OrderDetail />} />
+            <Route path="orders/:id/track" element={<OrderTrack />} />
             <Route path="favorites" element={<Favorites />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />

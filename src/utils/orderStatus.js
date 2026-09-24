@@ -1,10 +1,10 @@
 // src/utils/orderStatus.js
 
 export const statusLabels = {
-    pending: "قيد الانتظار",
-    processing: "جاري التجهيز",
-    completed: "تم التوصيل",
-    cancelled: "ملغي",
+    pending: { en: "Pending", ar: "قيد الانتظار" },
+    processing: { en: "Preparing", ar: "جاري التجهيز" },
+    completed: { en: "Delivered", ar: "تم التوصيل" },
+    cancelled: { en: "Cancelled", ar: "ملغي" },
 };
 
 export const statusTone = {
@@ -15,10 +15,10 @@ export const statusTone = {
 };
 
 export const ORDER_STATUSES = [
-    { id: "pending", name: "قيد الانتظار" },
-    { id: "processing", name: "جاري التجهيز" },
-    { id: "completed", name: "تم التوصيل" },
-    { id: "cancelled", name: "ملغي" },
+    { id: "pending", name: { en: "Pending", ar: "قيد الانتظار" } },
+    { id: "processing", name: { en: "Preparing", ar: "جاري التجهيز" } },
+    { id: "completed", name: { en: "Delivered", ar: "تم التوصيل" } },
+    { id: "cancelled", name: { en: "Cancelled", ar: "ملغي" } },
 ];
 
 // أضف هذه الخريطة أو الدالة لتحديد رقم الخطوة:

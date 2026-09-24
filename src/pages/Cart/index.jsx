@@ -43,14 +43,19 @@ export default function Cart() {
     );
   }
 
+  const progress = Math.min(100, Math.round((subtotal / freeDeliveryThreshold) * 100));
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="mb-6 font-display text-3xl font-extrabold text-text">{lang === "ar" ? "سلة الطلبات" : "Your Cart"}</h1>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-        <div className="space-y-3">
+        <div className="min-w-0 space-y-3">
           {items.map((item) => (
-            <div key={item.lineId} className="flex gap-4 rounded-2xl border border-line bg-surface-50 p-4 shadow-card">
+            <div
+              key={item.lineId}
+              className="flex gap-4 rounded-2xl border border-line bg-surface-50 p-4 shadow-card transition-colors hover:border-white/15"
+            >
               <img
                 src={item.image}
                 alt={t(item.name)}
@@ -62,16 +67,16 @@ export default function Cart() {
               />
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-display font-bold text-text">{t(item.name)}</p>
+                  <div className="min-w-0">
+                    <p className="truncate font-display font-bold text-text">{t(item.name)}</p>
                     {item.size && <p className="text-xs text-text-muted">{t(item.size.label)}</p>}
                   </div>
                   <button
                     onClick={() => handleRemove(item)}
                     aria-label="Remove item"
-                    className="text-text-muted/60 hover:text-secondary"
+                    className="text-text-muted/60 transition-colors hover:text-secondary"
                   >
-                    <Trash2 className="h-4.5 w-4.5" />
+                    <Trash2 className="h-5 w-5" />
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
@@ -81,7 +86,7 @@ export default function Cart() {
                     onIncrease={() => increaseQuantity(item.lineId)}
                     onDecrease={() => decreaseQuantity(item.lineId)}
                   />
-                  <Price value={item.unitPrice * item.quantity} />
+                  <Price value={item.unitPrice * item.quantity} className="text-primary" />
                 </div>
               </div>
             </div>
@@ -98,29 +103,37 @@ export default function Cart() {
             <div className="flex justify-between text-text-muted">
               <span>{lang === "ar" ? "رسوم التوصيل" : "Delivery Fee"}</span>
               {deliveryFee === 0 ? (
-                <span className="font-bold text-secondary">{lang === "ar" ? "مجاني" : "Free"}</span>
+                <span className="font-bold text-primary">{lang === "ar" ? "مجاني" : "Free"}</span>
               ) : (
                 <Price value={deliveryFee} className="text-text" />
               )}
             </div>
             {deliveryFee > 0 && (
-              <p className="text-xs text-text-muted/70">
-                {lang === "ar"
-                  ? `اطلب بـ ${freeDeliveryThreshold} أو أكتر عشان توصيل مجاني`
-                  : `Order ${freeDeliveryThreshold}+ for free delivery`}
-              </p>
+              <div className="space-y-1.5 pt-2">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                  <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
+                </div>
+                <p className="text-xs text-text-muted/80">
+                  {lang === "ar"
+                    ? `اطلب بـ ${freeDeliveryThreshold} أو أكتر عشان توصيل مجاني`
+                    : `Order ${freeDeliveryThreshold}+ for free delivery`}
+                </p>
+              </div>
             )}
           </div>
           <div className="my-4 border-t border-line" />
           <div className="flex justify-between font-display text-lg font-bold text-text">
             <span>{lang === "ar" ? "الإجمالي" : "Total"}</span>
-            <Price value={total} />
+            <Price value={total} className="text-primary" />
           </div>
-          <Button onClick={() => navigate("/checkout")} variant="primary" size="lg" className="mt-6 w-full">
+          <Button onClick={() => navigate("/checkout")} variant="gold" size="lg" className="mt-6 w-full">
             {lang === "ar" ? "استكمال الطلب" : "Checkout"}
             <ArrowRight className="h-5 w-5 rtl:rotate-180" />
           </Button>
-          <Link to="/menu" className="mt-3 block text-center text-sm font-semibold text-text-muted hover:text-secondary">
+          <Link
+            to="/menu"
+            className="mt-3 block text-center text-sm font-semibold text-text-muted transition-colors hover:text-primary"
+          >
             {lang === "ar" ? "متابعة التسوق" : "Continue shopping"}
           </Link>
         </div>

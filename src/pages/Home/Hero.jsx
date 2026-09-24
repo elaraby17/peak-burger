@@ -352,7 +352,7 @@ export default function Hero() {
             style={d(320)}
           >
             <Link to={ORDER_ROUTE} className="w-full sm:w-auto">
-              <Button variant="gold" size="lg" className="w-full">
+              <Button variant="primary" size="lg" className="w-full">
                 {isAr ? "اطلب الآن" : "Order Now"}
                 <ArrowRight className="h-5 w-5 rtl:rotate-180" aria-hidden="true" />
               </Button>
@@ -375,6 +375,7 @@ export default function Hero() {
         <>
           <button
             type="button"
+
             onClick={prev}
             aria-label={isAr ? "العرض السابق" : "Previous offer"}
             className="absolute top-1/2 hidden -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary md:block ltr:left-4 rtl:right-4"
