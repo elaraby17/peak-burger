@@ -86,6 +86,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+
 import { useLanguage } from "../../context/LanguageContext";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
@@ -144,15 +145,18 @@ export default function Login() {
 
   return (
     <main className="min-h-screen bg-ink-deep px-4 py-6 font-display sm:px-6 lg:px-8">
+      {/* =====================================================
+          MAIN CARD
+      ====================================================== */}
       <div
         dir="ltr"
-        className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-7xl grid-cols-1 gap-5 lg:grid-cols-2"
+        className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-7xl grid-cols-1 overflow-hidden rounded-[1rem] border border-white/10 bg-white/5 lg:grid-cols-2"
       >
         {/* =====================================================
-            IMAGE CARD
+            IMAGE SIDE
         ====================================================== */}
         <section
-          className={`relative hidden overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 lg:block ${
+          className={`relative hidden min-h-full overflow-hidden lg:block ${
             isArabic ? "lg:order-1" : "lg:order-2"
           }`}
         >
@@ -181,10 +185,10 @@ export default function Login() {
               }`}
             />
 
-            <h2 className="font-display text-4xl font-bold leading-tight text-white xl:text-5xl">
-              GOOD FOOD.
+            <h2 className="font-display text-4xl font-bold leading-tight text-gray-300 xl:text-3xl">
+              YOUR CRAVING.
               <br />
-              GOOD MOOD.
+              OUR CRAFT.
             </h2>
 
             <p className="mt-4 max-w-md text-sm leading-6 text-white/70">
@@ -196,56 +200,53 @@ export default function Login() {
         </section>
 
         {/* =====================================================
-            LOGIN CARD
+            LOGIN SIDE
+            No card here — this is part of the main card
         ====================================================== */}
         <section
-          className={`relative flex items-center rounded-[2rem] border border-white/10 bg-white/[0.04] px-6 py-10 shadow-2xl sm:px-10 lg:px-12 xl:px-16 ${
+          className={`relative flex min-h-full items-center px-8 py-10 sm:px-12 lg:px-14 xl:px-20 ${
             isArabic ? "lg:order-2" : "lg:order-1"
           }`}
         >
-          <div className="mx-auto w-full max-w-md">
-
+          <div className="w-full max-w-xl">
             {/* =================================================
                 HEADER
             ================================================== */}
             <div
-              className={`mb-10 rounded-2xl border border-white/10 bg-white/[0.03] p-6 ${
+              className={`mb-10 ${
                 isArabic ? "text-right" : "text-left"
               }`}
               dir={isArabic ? "rtl" : "ltr"}
             >
               {/* Logo */}
-             {/* Logo */}
-<div
-  className={`mb-6 flex w-full items-center gap-3 ${
-    isArabic ? "justify-end flex-row-reverse" : "justify-start"
-  }`}
->
-  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-text-dark">
-    <span className="font-display text-xl font-black">
-      P
-    </span>
-  </div>
+              <div
+                className={`mb-8 flex w-full items-center gap-3 ${
+                  isArabic
+                    ? "justify-end flex-row-reverse"
+                    : "justify-start"
+                }`}
+              >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-text-dark">
+                  <span className="font-display text-xl font-black">
+                    M
+                  </span>
+                </div>
 
-  <span
-    className={`font-display text-xl font-bold text-white ${
-      isArabic ? "text-right" : "text-left"
-    }`}
-  >
-    {isArabic ? "ماونت" : "MOUNT"}{" "}
-    <span className="text-primary">
-      {isArabic ? "برجر" : "BURGER"}
-    </span>
-  </span>
-</div>
+                <span className="font-display text-xl font-bold text-white">
+                  {isArabic ? "ماونت" : "MOUNT"}{" "}
+                  <span className="text-primary">
+                    {isArabic ? "برجر" : "BURGER"}
+                  </span>
+                </span>
+              </div>
 
               {/* Welcome */}
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
                 {isArabic ? "أهلاً بيك" : "WELCOME BACK"}
               </p>
 
-              {/* Main Heading */}
-              <h1 className="font-display text-4xl font-bold text-white">
+              {/* Heading */}
+              <h1 className="font-display text-4xl font-bold text-white sm:text-5xl">
                 {isArabic ? "تسجيل الدخول" : "Log in"}
               </h1>
 
@@ -258,119 +259,107 @@ export default function Login() {
             </div>
 
             {/* =================================================
-                FORM CARD
+                FORM
             ================================================== */}
-            <div className="rounded-2xl border border-white/10 bg-black/10 p-6 sm:p-8">
-              <form
-                onSubmit={onSubmit}
-                className="space-y-7"
-              >
-                {/* Email */}
-                <FloatingInput
-                  label={
-                    isArabic
-                      ? "البريد الإلكتروني"
-                      : "Email"
-                  }
-                  type="email"
-                  icon={Mail}
-                  required
-                  value={form.email}
-                  dir={isArabic ? "rtl" : "ltr"}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      email: e.target.value,
-                    })
-                  }
-                />
+            <form onSubmit={onSubmit} className="space-y-7">
+              {/* Email */}
+              <FloatingInput
+                label={isArabic ? "البريد الإلكتروني" : "Email"}
+                type="email"
+                icon={Mail}
+                placeholder="example@email.com"
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                required
+                value={form.email}
+                dir={isArabic ? "rtl" : "ltr"}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    email: e.target.value,
+                  })
+                }
+              />
 
-                {/* Password */}
-                <FloatingInput
-                  label={
-                    isArabic
-                      ? "كلمة المرور"
-                      : "Password"
-                  }
-                  type="password"
-                  icon={Lock}
-                  required
-                  value={form.password}
-                  dir={isArabic ? "rtl" : "ltr"}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      password: e.target.value,
-                    })
-                  }
-                />
+              {/* Password */}
+              <FloatingInput
+                label={isArabic ? "كلمة المرور" : "Password"}
+                type="password"
+                icon={Lock}
+                showPasswordToggle
+                required
+                value={form.password}
+                dir={isArabic ? "rtl" : "ltr"}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    password: e.target.value,
+                  })
+                }
+              />
 
-                {/* Error */}
-                {error && (
-                  <div className="rounded-xl border border-secondary/20 bg-secondary/10 px-4 py-3">
-                    <p
-                      className={`text-sm font-medium text-secondary ${
-                        isArabic
-                          ? "text-right"
-                          : "text-left"
-                      }`}
-                      dir={isArabic ? "rtl" : "ltr"}
-                    >
-                      {error}
-                    </p>
-                  </div>
-                )}
-
-                {/* Forgot Password */}
-                <div
-                  className={`flex ${
-                    isArabic
-                      ? "justify-start"
-                      : "justify-end"
-                  }`}
-                >
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm font-semibold text-text-soft/60 transition-colors hover:text-primary"
+              {/* Error */}
+              {error && (
+                <div className="border-l-2 border-secondary bg-secondary/10 px-4 py-3">
+                  <p
+                    className={`text-sm font-medium text-secondary ${
+                      isArabic ? "text-right" : "text-left"
+                    }`}
                     dir={isArabic ? "rtl" : "ltr"}
                   >
-                    {isArabic
-                      ? "نسيت كلمة المرور؟"
-                      : "Forgot password?"}
-                  </Link>
+                    {error}
+                  </p>
                 </div>
+              )}
 
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  variant="gold"
-                  size="lg"
-                  className="group w-full"
-                  isLoading={isLoading}
+              {/* Forgot Password */}
+              <div
+                className={`flex ${
+                  isArabic
+                    ? "justify-start"
+                    : "justify-end"
+                }`}
+              >
+                <Link
+                  to="/forgot-password"
+                  className="text-sm font-semibold text-text-soft/60 transition-colors hover:text-primary"
+                  dir={isArabic ? "rtl" : "ltr"}
                 >
-                  <span dir={isArabic ? "rtl" : "ltr"}>
-                    {isArabic
-                      ? "تسجيل الدخول"
-                      : "Log in"}
-                  </span>
+                  {isArabic
+                    ? "نسيت كلمة المرور؟"
+                    : "Forgot password?"}
+                </Link>
+              </div>
 
-                  <ArrowRight
-                    size={18}
-                    className={`transition-transform duration-300 ${
-                      isArabic
-                        ? "rotate-180 group-hover:-translate-x-1"
-                        : "group-hover:translate-x-1"
-                    }`}
-                  />
-                </Button>
-              </form>
-            </div>
+              {/* Submit */}
+              <Button
+                type="submit"
+                variant="gold"
+                size="lg"
+                className="group w-full"
+                isLoading={isLoading}
+              >
+                <span dir={isArabic ? "rtl" : "ltr"}>
+                  {isArabic
+                    ? "تسجيل الدخول"
+                    : "Log in"}
+                </span>
+
+                <ArrowRight
+                  size={18}
+                  className={`transition-transform duration-300 ${
+                    isArabic
+                      ? "rotate-180 group-hover:-translate-x-1"
+                      : "group-hover:translate-x-1"
+                  }`}
+                />
+              </Button>
+            </form>
 
             {/* =================================================
                 REGISTER
             ================================================== */}
             <div
-              className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-5 text-center"
+              className="mt-8 text-center"
               dir={isArabic ? "rtl" : "ltr"}
             >
               <p className="text-sm text-text-soft/60">
@@ -387,7 +376,6 @@ export default function Login() {
                 </Link>
               </p>
             </div>
-
           </div>
         </section>
       </div>

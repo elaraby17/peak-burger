@@ -71,7 +71,11 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, ArrowRight, CheckCircle2 } from "lucide-react";
+import {
+  Mail,
+  ArrowRight,
+  CheckCircle2,
+} from "lucide-react";
 
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingInput from "../../components/ui/FloatingInput";
@@ -91,11 +95,17 @@ export default function ForgotPassword() {
     document.title = "Reset password — Peak Burger";
   }, []);
 
+  // =========================================================
+  // SUBMIT
+  // =========================================================
   const onSubmit = (e) => {
     e.preventDefault();
+
+    if (!email.trim()) return;
+
     setIsLoading(true);
 
-    // Frontend-only simulation — a real Laravel API call happens here later.
+    // Frontend-only simulation
     window.setTimeout(() => {
       setIsLoading(false);
       setSent(true);
@@ -103,22 +113,25 @@ export default function ForgotPassword() {
   };
 
   return (
-    <main className="min-h-screen bg-ink-deep px-4 py-8 font-display sm:px-6 lg:px-8">
-      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-        <section className="w-full max-w-lg rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-2xl sm:p-8">
-          
-          {/* =================================================
-              HEADER
-          ================================================== */}
+    <main className="min-h-screen bg-ink-deep px-4 py-6 font-display sm:px-6 lg:px-8">
+      {/* =====================================================
+          ONE MAIN CARD
+      ====================================================== */}
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-3xl items-center justify-center">
+        <section
+          className="w-full overflow-hidden rounded-[1rem] border border-white/10 bg-white/5"
+          dir={isArabic ? "rtl" : "ltr"}
+        >
           <div
-            className={`mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 ${
+            className={`flex min-h-full w-full flex-col justify-center px-8 py-12 sm:px-12 lg:px-16 xl:px-20 ${
               isArabic ? "text-right" : "text-left"
             }`}
-            dir={isArabic ? "rtl" : "ltr"}
           >
-            {/* Logo */}
+            {/* =================================================
+                LOGO
+            ================================================== */}
             <div
-              className={`mb-6 flex w-full items-center gap-3 ${
+              className={`mb-10 flex items-center gap-3 ${
                 isArabic
                   ? "flex-row-reverse justify-end"
                   : "justify-start"
@@ -126,15 +139,11 @@ export default function ForgotPassword() {
             >
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-text-dark">
                 <span className="font-display text-xl font-black">
-                  P
+                  M
                 </span>
               </div>
 
-              <span
-                className={`font-display text-xl font-bold text-white ${
-                  isArabic ? "text-right" : "text-left"
-                }`}
-              >
+              <span className="font-display text-xl font-bold text-white">
                 {isArabic ? "ماونت" : "MOUNT"}{" "}
                 <span className="text-primary">
                   {isArabic ? "برجر" : "BURGER"}
@@ -142,57 +151,61 @@ export default function ForgotPassword() {
               </span>
             </div>
 
-            {/* Small Heading */}
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
-              {sent
-                ? isArabic
-                  ? "تم الإرسال"
-                  : "LINK SENT"
-                : isArabic
-                ? "استرجاع الحساب"
-                : "ACCOUNT RECOVERY"}
-            </p>
+            {/* =================================================
+                HEADER
+            ================================================== */}
+            <div className="mb-10">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                {sent
+                  ? isArabic
+                    ? "تم الإرسال"
+                    : "LINK SENT"
+                  : isArabic
+                  ? "استرجاع الحساب"
+                  : "ACCOUNT RECOVERY"}
+              </p>
 
-            {/* Main Heading */}
-            <h1 className="font-display text-3xl font-bold text-white sm:text-4xl">
-              {isArabic
-                ? "استرجاع كلمة المرور"
-                : "Forgot your password?"}
-            </h1>
+              <h1 className="font-display text-2xl font-bold text-white sm:text-2xl">
+                {isArabic
+                  ? "استرجاع كلمة المرور"
+                  : "Forgot your password?"}
+              </h1>
 
-            {/* Subtitle */}
-            <p className="mt-3 max-w-md text-sm leading-6 text-text-soft/60">
-              {sent
-                ? isArabic
-                  ? "لو الإيميل ده متسجل عندنا، هتلاقي رابط إعادة التعيين فيه."
-                  : "If that email is registered, a reset link is on its way."
-                : isArabic
-                ? "هنبعتلك رابط لإعادة تعيين كلمة المرور."
-                : "We'll send a reset link to your email."}
-            </p>
-          </div>
+              <p className="mt-3 max-w-md text-sm leading-6 text-text-soft/60">
+                {sent
+                  ? isArabic
+                    ? "لو الإيميل ده متسجل عندنا، هتلاقي رابط إعادة التعيين فيه."
+                    : "If that email is registered, a reset link is on its way."
+                  : isArabic
+                  ? "هنبعتلك رابط لإعادة تعيين كلمة المرور."
+                  : "We'll send a reset link to your email."}
+              </p>
+            </div>
 
-          {/* =================================================
-              FORM / SUCCESS CARD
-          ================================================== */}
-          <div className="rounded-2xl border border-white/10 bg-black/10 p-6 sm:p-8">
+            {/* =================================================
+                CONTENT
+            ================================================== */}
             {sent ? (
               <div
-                className="text-center"
+                className="w-full"
                 dir={isArabic ? "rtl" : "ltr"}
               >
                 {/* Success Icon */}
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <div
+                  className={`mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary ${
+                    isArabic ? "mr-0 ml-auto" : ""
+                  }`}
+                >
                   <CheckCircle2 size={32} />
                 </div>
 
-                <h2 className="font-display text-2xl font-bold text-white">
+                <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
                   {isArabic
                     ? "راجع إيميلك"
                     : "Check your email"}
                 </h2>
 
-                <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-text-soft/60">
+                <p className="mt-3 max-w-md text-sm leading-6 text-text-soft/60">
                   {isArabic
                     ? "لو الإيميل متسجل عندنا، رابط إعادة تعيين كلمة المرور هيكون موجود هناك."
                     : "If the email is registered, you'll find a password reset link there."}
@@ -201,8 +214,10 @@ export default function ForgotPassword() {
                 <Button
                   variant="gold"
                   size="lg"
-                  className="group mt-7 w-full"
-                  onClick={() => navigate("/reset-password")}
+                  className="group mt-8 w-full"
+                  onClick={() =>
+                    navigate("/reset-password")
+                  }
                 >
                   <span>
                     {isArabic ? "متابعة" : "Continue"}
@@ -221,65 +236,70 @@ export default function ForgotPassword() {
             ) : (
               <form
                 onSubmit={onSubmit}
-                className="space-y-7"
+                className="w-full"
               >
-                {/* Email */}
-                <FloatingInput
-                  label={
-                    isArabic
-                      ? "البريد الإلكتروني"
-                      : "Email"
-                  }
-                  type="email"
-                  icon={Mail}
-                  required
-                  value={email}
-                  dir={isArabic ? "rtl" : "ltr"}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <div className="space-y-8">
+                  {/* Email */}
+                  <FloatingInput
+                    label={
+                      isArabic
+                        ? "البريد الإلكتروني"
+                        : "Email"
+                    }
+                    type="email"
+                    icon={Mail}
+                    placeholder="example@email.com"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                    required
+                    value={email}
+                    dir={isArabic ? "rtl" : "ltr"}
+                    onChange={(e) =>
+                      setEmail(e.target.value)
+                    }
+                  />
+                </div>
 
                 {/* Submit */}
-                <Button
-                  type="submit"
-                  variant="gold"
-                  size="lg"
-                  className="group w-full"
-                  isLoading={isLoading}
-                >
-                  <span dir={isArabic ? "rtl" : "ltr"}>
-                    {isArabic
-                      ? "إرسال الرابط"
-                      : "Send reset link"}
-                  </span>
+                <div className="mt-10">
+                  <Button
+                    type="submit"
+                    variant="gold"
+                    size="lg"
+                    className="group w-full"
+                    isLoading={isLoading}
+                  >
+                    <span>
+                      {isArabic
+                        ? "إرسال الرابط"
+                        : "Send reset link"}
+                    </span>
 
-                  <ArrowRight
-                    size={18}
-                    className={`transition-transform duration-300 ${
-                      isArabic
-                        ? "rotate-180 group-hover:-translate-x-1"
-                        : "group-hover:translate-x-1"
-                    }`}
-                  />
-                </Button>
+                    <ArrowRight
+                      size={18}
+                      className={`transition-transform duration-300 ${
+                        isArabic
+                          ? "rotate-180 group-hover:-translate-x-1"
+                          : "group-hover:translate-x-1"
+                      }`}
+                    />
+                  </Button>
+                </div>
               </form>
             )}
-          </div>
 
-          {/* =================================================
-              BACK TO LOGIN
-          ================================================== */}
-          <div
-            className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-5 text-center"
-            dir={isArabic ? "rtl" : "ltr"}
-          >
-            <Link
-              to="/login"
-              className="text-sm font-bold text-primary transition-colors hover:text-white"
-            >
-              {isArabic
-                ? "الرجوع لتسجيل الدخول"
-                : "Back to login"}
-            </Link>
+            {/* =================================================
+                BACK TO LOGIN
+            ================================================== */}
+            <div className="mt-8 text-center">
+              <Link
+                to="/login"
+                className="text-sm font-bold text-primary transition-colors hover:text-white"
+              >
+                {isArabic
+                  ? "الرجوع لتسجيل الدخول"
+                  : "Back to login"}
+              </Link>
+            </div>
           </div>
         </section>
       </div>

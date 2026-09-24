@@ -234,7 +234,7 @@ export default function Hero() {
                   width={1920}
                   height={1080}
                   loading={i === 0 ? "eager" : "lazy"}
-                  fetchpriority={i === 0 ? "high" : "auto"}
+                  fetchPriority={i === 0 ? "high" : "auto"}
                   decoding="async"
                   onError={handleImgError}
                   style={{ objectPosition: o.focus ?? "center" }}
