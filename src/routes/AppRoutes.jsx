@@ -11,7 +11,7 @@ import Home from "../pages/Home";
 import Menu from "../pages/Menu";
 import Offers from "../pages/Offers";
 // import OfferDetail from "../pages/Offers/OfferDetail";
-import OfferDetail from "../pages/Offers/OfferDetail";
+import OfferDetail from "../pages/Offers/OfferDetailarab";
 import Product from "../pages/Product";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
